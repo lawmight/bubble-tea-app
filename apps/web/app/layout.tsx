@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
+import { Analytics } from '@vercel/analytics/next';
+
 import { MobileShell } from '@/components/layout/MobileShell';
 import { SkipNav } from '@/components/layout/SkipNav';
 import { AppProviders } from '@/components/providers/AppProviders';
@@ -54,6 +56,7 @@ export default function RootLayout({
           <SkipNav />
           <MobileShell>{children}</MobileShell>
         </AppProviders>
+        <Analytics />
       </body>
     </html>
   );
