@@ -7,7 +7,7 @@ import { formatMoney, toMoney } from '@vetea/shared';
 
 import { DrinkCustomizerDynamic } from '@/components/shop/DrinkCustomizerDynamic';
 import { ProductCard } from '@/components/shop/ProductCard';
-import { getProductBySlug } from '@/lib/queries/products';
+import { getProductBySlug, getProducts } from '@/lib/queries/products';
 
 /** Dynamic so build does not require MongoDB (avoids auth failure on Vercel build). */
 export const dynamic = 'force-dynamic';
