@@ -61,6 +61,9 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# Cursor
+.cursor/
+
 # dotenv environment variables file
 .env
 .env.local
@@ -118,3 +121,6 @@ Thumbs.db
 # Kilocode / tooling
 .kilocode/
 .kilocode/
+.turbo/
+
+docs/

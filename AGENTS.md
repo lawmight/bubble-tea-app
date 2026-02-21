@@ -1,7 +1,12 @@
 # Agent Instructions
 
-- Repository currently contains planning docs only; no runnable app code or package manifests yet.
-- Build/lint/test commands are not defined; once the Next.js workspace is created, document `pnpm install`, `pnpm dev`, `pnpm lint`, `pnpm test`, and a single test like `pnpm test -- <pattern>` here.
+- Repository now contains a runnable Turborepo workspace with `apps/web` and `packages/shared`.
+- Common commands:
+  - `pnpm install`
+  - `pnpm dev`
+  - `pnpm lint`
+  - `pnpm test`
+  - single test example: `pnpm --filter @vetea/shared test -- price`
 - Architecture: planned Turborepo monorepo with `apps/web` (Next.js 15 App Router) and `packages/shared` (types, Zod schemas, utilities).
 - Data layer: MongoDB with Mongoose; server actions for mutations; API routes for webhooks/external callbacks.
 - Auth: Clerk with middleware and webhook verification.
@@ -15,4 +20,5 @@
 - Formatting: rely on ESLint + Prettier once configured; keep JSX tidy and readable.
 - Caching: explicitly set Next.js `fetch` cache options (Next 15 default is `no-store`).
 - Testing: Vitest + React Testing Library planned; Playwright optional for E2E.
+- **VETEA mockup images**: Use the canonical mold only. Rule `.cursor/rules/vetea-mockup-generation.mdc` applies when generating mockups under `docs/assets/`. Always use `docs/assets/vetea-mockup-mold.json` (base prompt) and `docs/assets/preview/vetea-mockup-mold-reference.png` (reference image); vary only the page-specific content.
 - No additional tool rules found (.cursor rules, CLAUDE.md, Windsurf, Cline, Goose, Copilot instructions).
