@@ -3,12 +3,7 @@ export * from './constants/store-hours';
 export * from './constants/sweetness-levels';
 export * from './constants/toppings';
 
-export * from './models/Counter';
-export * from './models/Order';
-export * from './models/Product';
-export * from './models/User';
-export * from './models/WebhookEvent';
-
+// Models are server-only (Mongoose). Import from '@vetea/shared/models/<Name>' to avoid pulling them into client bundles.
 export * from './types/cart';
 export * from './types/order';
 export * from './types/product';

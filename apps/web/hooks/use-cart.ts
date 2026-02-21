@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-import { clampQuantity, type Cart, type CartItem } from '@vetea/shared';
+import { clampQuantity, type Cart, type CartItem } from '@vetea/shared/client';
 
 const STORAGE_KEY = 'vetea-cart-v1';
 

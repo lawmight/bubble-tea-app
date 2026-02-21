@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     type: 'website',
   },
   manifest: '/manifest.webmanifest',
-  icons: { icon: '/logo.svg' },
+  icons: { icon: '/logo.ico' },
 };
 
 const localBusinessJsonLd = {
@@ -47,7 +47,7 @@ export default function RootLayout({
 }>): JSX.Element {
   return (
     <html lang="en">
-      <body className="bg-[#fcf8f1] text-[#2a2a2a] antialiased">
+        <body className="bg-[#F5F0E8] text-[#6B5344] antialiased">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}

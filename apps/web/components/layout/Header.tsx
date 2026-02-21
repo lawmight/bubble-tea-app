@@ -1,41 +1,69 @@
 import { auth } from '@clerk/nextjs/server';
-import Image from 'next/image';
 import Link from 'next/link';
 
 export async function Header(): Promise<JSX.Element> {
-  const { userId } = await auth();
+  await auth();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-[#e6dac9] bg-[#fcf8f1]/95 backdrop-blur">
-      <div className="mx-auto flex w-full max-w-screen-md items-center justify-between px-4 py-3">
-        <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight text-[#245741]">
-          <Image
-            src="/logo.svg"
-            alt=""
-            width={32}
-            height={32}
-            className="h-8 w-8 object-contain"
-            priority
-          />
-          VETEA
+    <header className="sticky top-0 z-30 bg-[#F5F0E8]/95 backdrop-blur-md">
+      <div className="mx-auto grid w-full max-w-3xl grid-cols-[2.5rem_1fr_2.5rem] items-center px-4 py-3">
+        <div aria-hidden="true" />
+
+        <Link
+          href="/"
+          className="flex items-center justify-center gap-2"
+        >
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <path
+              d="M12 3C8 3 5.5 6.5 5.5 11c0 4 2.5 7.5 6.5 10 4-2.5 6.5-6 6.5-10 0-4.5-2.5-8-6.5-8z"
+              fill="#8B9F82"
+            />
+            <path
+              d="M12 7v10"
+              stroke="#F5F0E8"
+              strokeWidth="1.3"
+              strokeLinecap="round"
+            />
+            <path
+              d="M9.5 10c1.5 1 3.5 1 5 0"
+              stroke="#F5F0E8"
+              strokeWidth="1.2"
+              strokeLinecap="round"
+            />
+          </svg>
+          <span className="text-xl tracking-wide text-[#6B5344] font-display">
+            VETEA
+          </span>
         </Link>
-        <nav aria-label="Global" className="flex items-center gap-3 text-sm font-medium">
-          <Link href="/menu" className="text-[#5b4632] hover:text-[#245741]">
-            Menu
+
+        <div className="flex items-center justify-end">
+          <Link
+            href="/menu"
+            aria-label="Search menu"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-[#6B5344] transition-colors hover:bg-[#E8DDD0]"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <circle cx="11" cy="11" r="7" />
+              <path d="m21 21-4.35-4.35" />
+            </svg>
           </Link>
-          <Link href="/cart" className="text-[#5b4632] hover:text-[#245741]">
-            Cart
-          </Link>
-          {userId ? (
-            <Link href="/profile" className="text-[#5b4632] hover:text-[#245741]">
-              Profile
-            </Link>
-          ) : (
-            <Link href="/sign-in" className="text-[#5b4632] hover:text-[#245741]">
-              Sign in
-            </Link>
-          )}
-        </nav>
+        </div>
       </div>
     </header>
   );

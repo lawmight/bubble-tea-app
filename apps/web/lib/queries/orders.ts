@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 
-import { OrderModel, type Order } from '@vetea/shared';
+import { OrderModel } from '@vetea/shared/models/Order';
+import type { Order } from '@vetea/shared';
 
 import { connectDB } from '@/lib/db';
 

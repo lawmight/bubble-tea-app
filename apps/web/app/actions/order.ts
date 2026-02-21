@@ -1,9 +1,9 @@
 'use server';
 
 import { auth, currentUser } from '@clerk/nextjs/server';
+import { OrderModel } from '@vetea/shared/models/Order';
+import { ProductModel } from '@vetea/shared/models/Product';
 import {
-  OrderModel,
-  ProductModel,
   calculateItemUnitPrice,
   calculateSubtotal,
   calculateTax,

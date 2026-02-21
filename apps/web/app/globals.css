@@ -1,11 +1,41 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
 @import 'tailwindcss';
 
 :root {
   color-scheme: light;
+
+  --color-bg: #F5F0E8;
+  --color-bg-card: #FFFFFF;
+  --color-bg-input: #FAF7F2;
+  --color-bg-muted: #F0EAE0;
+
+  --color-primary: #8B9F82;
+  --color-primary-hover: #7A8E72;
+  --color-primary-muted: #8B9F82CC;
+
+  --color-accent: #6B5344;
+  --color-accent-hover: #5A4538;
+
+  --color-text: #6B5344;
+  --color-text-secondary: #8C7B6B;
+  --color-text-inverse: #FFFFFF;
+
+  --color-border: #D4C5B2;
+  --color-border-card: #E8DDD0;
+
+  --color-danger: #A0524F;
+  --color-danger-hover: #8C4542;
+
+  --font-display: 'DM Serif Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 html,
@@ -15,15 +45,180 @@ body {
 }
 
 body {
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    sans-serif;
+  font-family: var(--font-body);
 }
 
 a {
   color: inherit;
   text-decoration: none;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+::selection {
+  background-color: #8B9F8233;
+  color: #6B5344;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+  opacity: 0;
+}
+
+.animate-delay-100 { animation-delay: 0.1s; }
+.animate-delay-200 { animation-delay: 0.2s; }
+.animate-delay-300 { animation-delay: 0.3s; }
+.animate-delay-400 { animation-delay: 0.4s; }
+.animate-delay-500 { animation-delay: 0.5s; }
+.animate-delay-600 { animation-delay: 0.6s; }
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, #FAF7F2 25%, #EDE5D8 50%, #FAF7F2 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Cart item enter/exit animations */
+@keyframes cartItemIn {
+  from {
+    opacity: 0;
+    transform: translateX(-12px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes cartItemOut {
+  from {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    max-height: 120px;
+  }
+  to {
+    opacity: 0;
+    transform: translateX(24px) scale(0.95);
+    max-height: 0;
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.animate-cart-item-in {
+  animation: cartItemIn 0.35s ease-out forwards;
+}
+
+/* Swipe hint fade */
+@keyframes swipeHintFade {
+  0% { opacity: 0.7; transform: translateX(0); }
+  50% { opacity: 0.7; transform: translateX(-6px); }
+  100% { opacity: 0; transform: translateX(0); }
+}
+
+.animate-swipe-hint {
+  animation: swipeHintFade 2.5s ease-out 1s forwards;
+}
+
+/* Checkmark scale-in */
+@keyframes scaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  60% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+/* Confetti dots */
+@keyframes confettiFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0);
+  }
+  15% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-120px) scale(0.5);
+  }
+}
+
+.confetti-container {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.confetti-dot {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  animation: confettiFloat 2.5s ease-out forwards;
+}
+
+/* Stagger each dot */
+.confetti-dot:nth-child(1) { left: 10%; width: 8px; height: 8px; background: #8B9F82; animation-delay: 0.1s; }
+.confetti-dot:nth-child(2) { left: 25%; width: 6px; height: 6px; background: #A8BDA0; animation-delay: 0.3s; }
+.confetti-dot:nth-child(3) { left: 40%; width: 10px; height: 10px; background: #8B9F82; animation-delay: 0.15s; }
+.confetti-dot:nth-child(4) { left: 55%; width: 5px; height: 5px; background: #C2D1BB; animation-delay: 0.45s; }
+.confetti-dot:nth-child(5) { left: 70%; width: 7px; height: 7px; background: #8B9F82; animation-delay: 0.25s; }
+.confetti-dot:nth-child(6) { left: 85%; width: 9px; height: 9px; background: #A8BDA0; animation-delay: 0.5s; }
+.confetti-dot:nth-child(7) { left: 15%; width: 6px; height: 6px; background: #C2D1BB; animation-delay: 0.6s; }
+.confetti-dot:nth-child(8) { left: 50%; width: 8px; height: 8px; background: #8B9F82; animation-delay: 0.35s; }
+.confetti-dot:nth-child(9) { left: 78%; width: 5px; height: 5px; background: #A8BDA0; animation-delay: 0.7s; }
+.confetti-dot:nth-child(10) { left: 35%; width: 7px; height: 7px; background: #8B9F82; animation-delay: 0.55s; }
+
+/* Pickup time pulse */
+@keyframes gentlePulse {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+.animate-gentle-pulse {
+  animation: gentlePulse 2s ease-in-out infinite;
 }

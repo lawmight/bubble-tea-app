@@ -1,6 +1,7 @@
 import { unstable_cache } from 'next/cache';
 
-import { ProductModel, type Product } from '@vetea/shared';
+import { ProductModel } from '@vetea/shared/models/Product';
+import type { Product } from '@vetea/shared';
 
 import { connectDB } from '@/lib/db';
 
@@ -20,27 +21,31 @@ function normalizeProduct(raw: Record<string, unknown>): Product {
   };
 }
 
-const getProductsCached = unstable_cache(
-  async (category?: string) => {
-    await connectDB();
-    const filter = category
-      ? { available: true, category }
-      : {
-          available: true,
-        };
+/**
+ * Cached per category so each filter has its own cache entry.
+ * Key includes category so revalidateTag('products') invalidates all category slices.
+ */
+function getProductsCached(category?: string): Promise<Product[]> {
+  return unstable_cache(
+    async () => {
+      await connectDB();
+      const filter = category
+        ? { available: true, category }
+        : { available: true };
 
-    const products = await ProductModel.find(filter)
-      .select(
-        'name slug description basePriceInCents category image available customizations createdAt updatedAt',
-      )
-      .lean()
-      .exec();
+      const products = await ProductModel.find(filter)
+        .select(
+          'name slug description basePriceInCents category image available customizations createdAt updatedAt',
+        )
+        .lean()
+        .exec();
 
-    return products.map((product) => normalizeProduct(product as Record<string, unknown>));
-  },
-  ['products-list'],
-  { revalidate: 3600, tags: ['products'] },
-);
+      return products.map((product) => normalizeProduct(product as Record<string, unknown>));
+    },
+    ['products-list', category ?? 'all'],
+    { revalidate: 3600, tags: ['products'] },
+  )();
+}
 
 const getProductBySlugCached = unstable_cache(
   async (slug: string) => {

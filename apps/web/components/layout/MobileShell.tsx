@@ -9,12 +9,15 @@ interface MobileShellProps {
 
 export async function MobileShell({ children }: MobileShellProps): Promise<JSX.Element> {
   return (
-    <>
+    <div className="flex min-h-dvh flex-col bg-[#F5F0E8]">
       <Header />
-      <main id="main-content" className="mx-auto min-h-[calc(100dvh-8.5rem)] max-w-screen-md px-4 py-6 pb-24">
+      <main
+        id="main-content"
+        className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 pb-24"
+      >
         {children}
       </main>
       <BottomNav />
-    </>
+    </div>
   );
 }

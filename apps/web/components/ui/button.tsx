@@ -10,13 +10,13 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#245741] text-white hover:bg-[#1f4a37] focus-visible:outline-[#245741] disabled:bg-[#245741]/50',
+    'bg-[#8B9F82] text-white hover:bg-[#7A8E72] focus-visible:outline-[#8B9F82] disabled:bg-[#8B9F82]/50',
   secondary:
-    'bg-[#f3ede3] text-[#2a2a2a] hover:bg-[#e9dfd1] focus-visible:outline-[#aa7f5f] disabled:bg-[#f3ede3]/60',
+    'bg-[#F5F0E8] text-[#6B5344] hover:bg-[#EBE4D8] focus-visible:outline-[#6B5344] disabled:bg-[#F5F0E8]/60',
   ghost:
-    'bg-transparent text-[#2a2a2a] hover:bg-[#f8f4ed] focus-visible:outline-[#aa7f5f] disabled:text-[#2a2a2a]/40',
+    'bg-transparent text-[#6B5344] hover:bg-[#F5F0E8] focus-visible:outline-[#8B9F82] disabled:text-[#6B5344]/40',
   danger:
-    'bg-[#8f3331] text-white hover:bg-[#7b2b2a] focus-visible:outline-[#8f3331] disabled:bg-[#8f3331]/40',
+    'bg-[#A0524F] text-white hover:bg-[#8C4542] focus-visible:outline-[#A0524F] disabled:bg-[#A0524F]/40',
 };
 
 export function Button({

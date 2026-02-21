@@ -1,41 +1,40 @@
-import { formatMoney, toMoney, type Product } from '@vetea/shared';
+import { formatMoney, toMoney, type Product } from '@vetea/shared/client';
 import Image from 'next/image';
 import Link from 'next/link';
-
-import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
 
 interface ProductCardProps {
   product: Product;
   priority?: boolean;
+  index?: number;
 }
 
-export function ProductCard({ product, priority = false }: ProductCardProps): JSX.Element {
+export function ProductCard({ product, priority = false, index = 0 }: ProductCardProps): JSX.Element {
   return (
-    <Card className="overflow-hidden p-0">
-      <Link href={`/menu/${product.slug}`} className="block">
-        <div className="relative aspect-square overflow-hidden bg-[#f8f4ed]">
+    <Link
+      href={`/menu/${product.slug}`}
+      className="group block animate-fade-in-up"
+      style={{ animationDelay: `${index * 60}ms` }}
+    >
+      <div className="overflow-hidden rounded-2xl border border-[#D4C5B2] bg-white transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md">
+        <div className="shimmer relative aspect-square overflow-hidden">
           <Image
             src={product.image}
             alt={`${product.name} bubble tea`}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-300 group-hover:scale-105"
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             priority={priority}
             fetchPriority={priority ? 'high' : 'auto'}
           />
         </div>
-        <div className="space-y-2 p-4">
-          <div className="flex items-start justify-between gap-3">
-            <h3 className="text-base font-semibold text-[#2a2a2a]">{product.name}</h3>
-            <Badge>{product.category}</Badge>
-          </div>
-          <p className="line-clamp-2 text-sm text-[#6f5a44]">{product.description}</p>
-          <p className="text-sm font-semibold text-[#245741]">
+        <div className="px-3 py-3 text-center">
+          <h3 className="text-sm font-semibold text-[#6B5344]">{product.name}</h3>
+          <p className="mt-1 text-sm font-medium text-[#8B9F82]">
+            <span className="text-xs font-normal text-[#8C7B6B]">From </span>
             {formatMoney(toMoney(product.basePriceInCents))}
           </p>
         </div>
-      </Link>
-    </Card>
+      </div>
+    </Link>
   );
 }

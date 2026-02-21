@@ -10,7 +10,7 @@
 - Architecture: planned Turborepo monorepo with `apps/web` (Next.js 15 App Router) and `packages/shared` (types, Zod schemas, utilities).
 - Data layer: MongoDB with Mongoose; server actions for mutations; API routes for webhooks/external callbacks.
 - Auth: Clerk with middleware and webhook verification.
-- **Clerk**: Use `clerkMiddleware()` in `middleware.ts`, wrap app with `<ClerkProvider>`, use only `@clerk/nextjs` and `@clerk/nextjs/server` (App Router only; no `authMiddleware`, `_app.tsx`, or `pages/` sign-in). Real keys in `.env.local` only; use placeholders in snippets/docs. See `.cursor/rules/clerk-nextjs-app-router.mdc`. Quickstart: https://clerk.com/docs/nextjs/getting-started/quickstart. For Vercel **Production** and **Preview** env setup (env vars, redirect URLs, webhooks), see [docs/clerk-vercel-setup.md](docs/clerk-vercel-setup.md).
+- **Clerk**: Use `clerkMiddleware()` in `middleware.ts`, wrap app with `<ClerkProvider>`, use only `@clerk/nextjs` and `@clerk/nextjs/server` (App Router only; no `authMiddleware`, `_app.tsx`, or `pages/` sign-in). Real keys in `.env.local` only; use placeholders in snippets/docs. See `.cursor/rules/clerk-nextjs-app-router.mdc`. Quickstart: https://clerk.com/docs/nextjs/getting-started/quickstart. For Vercel **Production** and **Preview** env setup (env vars, redirect URLs, webhooks), see [docs/setup/clerk-vercel-setup.md](docs/setup/clerk-vercel-setup.md).
 - Important plan reference: `plans/nextjs-bubble-tea-plan.md` outlines routes, components, and data models.
 - Styling: Tailwind CSS with shadcn/ui components.
 - Code style: TypeScript strict mode, prefer server components by default, use `'use client'` only where interactivity is needed.

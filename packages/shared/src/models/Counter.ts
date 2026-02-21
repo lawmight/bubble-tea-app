@@ -15,4 +15,4 @@ export type CounterDocument = InferSchemaType<typeof counterSchema> & {
   _id: Schema.Types.ObjectId;
 };
 
-export const CounterModel = models.Counter || model('Counter', counterSchema);
+export const CounterModel = models?.Counter ?? model('Counter', counterSchema);

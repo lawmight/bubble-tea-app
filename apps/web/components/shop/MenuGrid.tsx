@@ -11,7 +11,7 @@ export async function MenuGrid({ category }: MenuGridProps): Promise<JSX.Element
 
   if (products.length === 0) {
     return (
-      <p className="rounded-2xl border border-dashed border-[#d8c7b0] p-8 text-center text-sm text-[#6f5a44]">
+      <p className="rounded-2xl border border-dashed border-[#D4C5B2] p-8 text-center text-sm text-[#8C7B6B]">
         No drinks found for this category.
       </p>
     );
@@ -20,7 +20,7 @@ export async function MenuGrid({ category }: MenuGridProps): Promise<JSX.Element
   return (
     <section aria-label="Menu products" className="grid grid-cols-2 gap-4 md:grid-cols-3">
       {products.map((product, index) => (
-        <ProductCard key={product.id} product={product} priority={index < 4} />
+        <ProductCard key={product.id} product={product} priority={index < 4} index={index} />
       ))}
     </section>
   );

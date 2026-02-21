@@ -1,4 +1,5 @@
-import { UserModel, type User } from '@vetea/shared';
+import { UserModel } from '@vetea/shared/models/User';
+import type { User } from '@vetea/shared';
 
 import { connectDB } from '@/lib/db';
 

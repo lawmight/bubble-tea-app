@@ -38,4 +38,4 @@ This is a monorepo; the Next.js app lives in `apps/web`. In your Vercel project:
 2. **Install** runs from the repo root automatically; **Build** uses Turborepo from `apps/web/vercel.json`.
 3. **MongoDB Atlas**: Builds that need DB access (e.g. collecting page data for `/menu/[slug]`) must be allowed by Atlas. In **MongoDB Atlas → Project → Network Access → Add IP Address**, add **0.0.0.0/0** (Allow access from anywhere). Otherwise Vercel build servers are blocked by the IP access list.
 
-Then add your env vars in Vercel (e.g. from `apps/web/.env.local.example`). **Clerk keys must be set for Production** in Vercel (not only Pre-Production) or the build will fail. See `docs/deployment.md` and `docs/vercel-env-setup.md` for more.
+Then add your env vars in Vercel (e.g. from `apps/web/.env.local.example`). **Clerk keys must be set for Production** in Vercel (not only Pre-Production) or the build will fail. See `docs/setup/deployment.md` and `docs/setup/vercel-env-setup.md` for more.

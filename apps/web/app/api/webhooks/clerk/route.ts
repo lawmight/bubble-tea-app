@@ -2,7 +2,8 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { Webhook } from 'svix';
 
-import { UserModel, WebhookEventModel } from '@vetea/shared';
+import { UserModel } from '@vetea/shared/models/User';
+import { WebhookEventModel } from '@vetea/shared/models/WebhookEvent';
 import type { WebhookEvent } from '@clerk/nextjs/server';
 
 import { connectDB } from '@/lib/db';

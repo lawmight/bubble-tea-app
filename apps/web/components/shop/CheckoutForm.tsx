@@ -1,13 +1,13 @@
 'use client';
 
+import Image from 'next/image';
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { calculateTax, calculateTotal, formatMoney, toMoney } from '@vetea/shared';
+import { calculateTax, calculateTotal, formatMoney, toMoney } from '@vetea/shared/client';
 
 import { placeOrder } from '@/app/actions/order';
 import { OrderSummary } from '@/components/shop/OrderSummary';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/use-cart';
 
@@ -63,20 +63,17 @@ export function CheckoutForm(): JSX.Element {
 
       clearCart();
       setStatusMessage(`Order ${result.data?.orderNumber ?? ''} placed successfully.`);
-      router.push('/orders');
+      router.push(
+        `/order-confirmation?orderNumber=${encodeURIComponent(result.data?.orderNumber ?? '')}`,
+      );
     } finally {
       setPending(false);
     }
   }
 
   return (
-    <section className="space-y-4">
-      <header className="space-y-1">
-        <h1 className="text-2xl font-semibold text-[#2a2a2a]">Checkout</h1>
-        <p className="text-sm text-[#6f5a44]">
-          Review your details before placing your order.
-        </p>
-      </header>
+    <section className="space-y-5 pb-6">
+      <h1 className="font-display text-2xl text-[#6B5344]">Order Summary</h1>
 
       {isClosed ? (
         <p role="alert" className="rounded-xl bg-[#fff3cd] px-4 py-3 text-sm text-[#7a5b00]">
@@ -84,71 +81,71 @@ export function CheckoutForm(): JSX.Element {
         </p>
       ) : null}
 
-      <div className="space-y-3 rounded-2xl border border-[#e6dac9] bg-white p-4">
-        <div className="space-y-1">
-          <label htmlFor="name" className="text-sm font-medium text-[#5b4632]">
-            Full name
-          </label>
-          <Input
-            id="name"
-            name="name"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            autoComplete="name"
-            aria-describedby={errorMessage ? 'checkout-error' : undefined}
-          />
-        </div>
-        <div className="space-y-1">
-          <label htmlFor="phone" className="text-sm font-medium text-[#5b4632]">
-            Phone number
-          </label>
-          <Input
-            id="phone"
-            name="phone"
-            value={phone}
-            onChange={(event) => setPhone(event.target.value)}
-            autoComplete="tel"
-            aria-describedby={errorMessage ? 'checkout-error' : undefined}
-          />
-        </div>
-
-        <fieldset className="space-y-2">
-          <legend className="text-sm font-medium text-[#5b4632]">Tip</legend>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { label: 'No tip', value: 0 },
-              { label: '10%', value: Math.round(subtotalInCents * 0.1) },
-              { label: '15%', value: Math.round(subtotalInCents * 0.15) },
-              { label: '20%', value: Math.round(subtotalInCents * 0.2) },
-            ].map((tip) => (
-              <button
-                key={tip.label}
-                type="button"
-                onClick={() => setTipInCents(tip.value)}
-                className={`rounded-full border px-3 py-1 text-sm ${
-                  tipInCents === tip.value
-                    ? 'border-[#245741] bg-[#245741] text-white'
-                    : 'border-[#d8c7b0] text-[#5b4632]'
-                }`}
+      {/* Cart items */}
+      {items.length > 0 && (
+        <div className="rounded-2xl border border-[#E8DDD0] bg-white">
+          <div className="border-b border-[#E8DDD0] px-4 py-2.5">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-[#8C7B6B]">
+              Items ({items.reduce((n, i) => n + i.quantity, 0)})
+            </h2>
+          </div>
+          <div className="divide-y divide-[#F5F0E8]">
+            {items.map((item) => (
+              <div
+                key={`${item.productId}-${item.selection.size}-${item.selection.toppings.join(',')}`}
+                className="flex items-center gap-3 px-4 py-3"
               >
-                {tip.label}
-              </button>
+                <div className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-[#D4C5B2] bg-[#F5F0E8]">
+                  <Image
+                    src={item.image}
+                    alt={item.name}
+                    fill
+                    className="object-cover"
+                    sizes="48px"
+                  />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-semibold text-[#6B5344]">{item.name}</p>
+                  <p className="text-xs text-[#8C7B6B]">
+                    {formatMoney(toMoney(item.basePriceInCents))} &times; {item.quantity}
+                  </p>
+                </div>
+                <p className="shrink-0 text-sm font-bold text-[#6B5344]">
+                  {formatMoney(toMoney(item.basePriceInCents * item.quantity))}
+                </p>
+              </div>
             ))}
           </div>
-        </fieldset>
-      </div>
+        </div>
+      )}
 
-      {errorMessage ? (
-        <p id="checkout-error" role="alert" className="rounded-xl bg-[#fde8e8] px-4 py-3 text-sm text-[#8f3331]">
-          {errorMessage}
-        </p>
-      ) : null}
-      {statusMessage ? (
-        <p role="status" aria-live="polite" className="rounded-xl bg-[#e7f5ee] px-4 py-3 text-sm text-[#245741]">
-          {statusMessage}
-        </p>
-      ) : null}
+      {/* Tip selector */}
+      <fieldset className="space-y-2 rounded-2xl border border-[#E8DDD0] bg-white p-4">
+        <legend className="text-sm font-medium text-[#6B5344]">Add a tip</legend>
+        <div className="flex flex-wrap gap-2">
+          {[
+            { label: 'No tip', value: 0 },
+            { label: '10%', value: Math.round(subtotalInCents * 0.1) },
+            { label: '15%', value: Math.round(subtotalInCents * 0.15) },
+            { label: '20%', value: Math.round(subtotalInCents * 0.2) },
+          ].map((tip) => (
+            <button
+              key={tip.label}
+              type="button"
+              onClick={() => setTipInCents(tip.value)}
+              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+                tipInCents === tip.value
+                  ? 'border-[#8B9F82] bg-[#8B9F82] text-white'
+                  : 'border-[#D4C5B2] text-[#6B5344] hover:border-[#8B9F82] hover:text-[#8B9F82]'
+              }`}
+            >
+              {tip.label}
+            </button>
+          ))}
+        </div>
+      </fieldset>
 
+      {/* Price breakdown */}
       <OrderSummary
         subtotalInCents={subtotalInCents}
         taxInCents={taxInCents}
@@ -156,9 +153,84 @@ export function CheckoutForm(): JSX.Element {
         totalInCents={totalInCents}
       />
 
-      <Button disabled={pending || isClosed} className="w-full" onClick={() => void submitOrder()}>
-        {pending ? 'Placing order...' : `Place order (${formatMoney(toMoney(totalInCents))})`}
-      </Button>
+      {/* Contact form */}
+      <div className="space-y-3 rounded-2xl border border-[#D4C5B2] bg-white p-5">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-[#8C7B6B]">
+          Pickup Details
+        </h2>
+        <div className="space-y-1.5">
+          <label htmlFor="name" className="text-sm font-medium text-[#6B5344]">
+            Name:
+          </label>
+          <Input
+            id="name"
+            name="name"
+            placeholder="Your full name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            autoComplete="name"
+            aria-describedby={errorMessage ? 'checkout-error' : undefined}
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label htmlFor="phone" className="text-sm font-medium text-[#6B5344]">
+            Phone:
+          </label>
+          <Input
+            id="phone"
+            name="phone"
+            placeholder="(555) 123-4567"
+            value={phone}
+            onChange={(event) => setPhone(event.target.value)}
+            autoComplete="tel"
+            aria-describedby={errorMessage ? 'checkout-error' : undefined}
+          />
+        </div>
+        <p className="pt-1 text-xs text-[#8C7B6B]">Pay in person on pickup.</p>
+      </div>
+
+      {/* Error / status messages */}
+      {errorMessage ? (
+        <p
+          id="checkout-error"
+          role="alert"
+          className="rounded-xl bg-[#fde8e8] px-4 py-3 text-sm text-[#8f3331]"
+        >
+          {errorMessage}
+        </p>
+      ) : null}
+      {statusMessage ? (
+        <p
+          role="status"
+          aria-live="polite"
+          className="rounded-xl bg-[#e7f5ee] px-4 py-3 text-sm text-[#245741]"
+        >
+          {statusMessage}
+        </p>
+      ) : null}
+
+      {/* Estimated pickup notice */}
+      <div className="flex items-center justify-center gap-1.5 text-sm text-[#8B9F82]">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <circle cx="12" cy="12" r="10" stroke="#8B9F82" strokeWidth="2" />
+          <path d="M12 6v6l4 2" stroke="#8B9F82" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        <span className="font-medium">Estimated pickup: 10-15 min</span>
+      </div>
+
+      {/* Place Order CTA */}
+      <button
+        type="button"
+        disabled={pending || isClosed}
+        onClick={() => void submitOrder()}
+        className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#8B9F82] text-sm font-bold text-white transition-colors hover:bg-[#7A8E72] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8B9F82] disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2" />
+          <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+        </svg>
+        {pending ? 'Placing order...' : `Place Order (${formatMoney(toMoney(totalInCents))})`}
+      </button>
     </section>
   );
 }

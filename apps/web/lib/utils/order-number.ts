@@ -1,4 +1,4 @@
-import { CounterModel } from '@vetea/shared';
+import { CounterModel } from '@vetea/shared/models/Counter';
 
 export async function getNextOrderNumber(now = new Date()): Promise<string> {
   const date = now.toISOString().slice(0, 10);

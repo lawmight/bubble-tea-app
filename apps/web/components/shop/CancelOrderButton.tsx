@@ -17,7 +17,7 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps): JSX.Elem
     <div className="space-y-1">
       <Button
         variant="danger"
-        className="h-9 px-3 text-xs"
+        className="h-8 px-3 text-xs"
         disabled={pending}
         onClick={() =>
           startTransition(async () => {
@@ -26,10 +26,10 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps): JSX.Elem
           })
         }
       >
-        {pending ? 'Cancelling...' : 'Cancel'}
+        {pending ? 'Cancelling\u2026' : 'Cancel Order'}
       </Button>
       {message ? (
-        <p role="status" aria-live="polite" className="text-xs text-[#6f5a44]">
+        <p role="status" aria-live="polite" className="text-xs text-[#8C7B6B]">
           {message}
         </p>
       ) : null}
