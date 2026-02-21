@@ -29,3 +29,12 @@ Run a single test:
 ```bash
 pnpm --filter @vetea/shared test -- price
 ```
+
+## Deploying to Vercel
+
+This is a monorepo; the Next.js app lives in `apps/web`. In your Vercel project:
+
+1. **Root Directory**: Set to **`apps/web`** (required so Vercel finds the Next.js app).
+2. **Install** runs from the repo root automatically; **Build** uses Turborepo from `apps/web/vercel.json`.
+
+Then add your env vars in Vercel (e.g. from `apps/web/.env.local.example`).

@@ -1,21 +1,11 @@
 import type { Metadata } from 'next';
-import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 
 import { formatMoney, toMoney } from '@vetea/shared';
 
+import { DrinkCustomizerDynamic } from '@/components/shop/DrinkCustomizerDynamic';
 import { getProductBySlug, getProducts } from '@/lib/queries/products';
-
-const DrinkCustomizer = dynamic(
-  () => import('@/components/shop/DrinkCustomizer').then((module) => module.DrinkCustomizer),
-  {
-    ssr: false,
-    loading: () => (
-      <div className="h-40 animate-pulse rounded-2xl bg-[#efe5d8]" aria-busy="true" />
-    ),
-  },
-);
 
 interface ProductPageProps {
   params: Promise<{ slug: string }>;
@@ -101,7 +91,7 @@ export default async function ProductDetailPage({
         </div>
       </section>
 
-      <DrinkCustomizer product={product} />
+      <DrinkCustomizerDynamic product={product} />
     </div>
   );
 }
