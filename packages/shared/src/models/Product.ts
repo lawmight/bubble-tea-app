@@ -39,7 +39,6 @@ const productSchema = new Schema(
   { timestamps: true },
 );
 
-productSchema.index({ slug: 1 }, { unique: true });
 productSchema.index({ category: 1, available: 1 });
 productSchema.index({ available: 1 });
 

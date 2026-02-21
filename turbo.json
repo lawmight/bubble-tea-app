@@ -1,9 +1,22 @@
 {
   "$schema": "https://turbo.build/schema.json",
+  "globalEnv": [
+    "MONGODB_URI",
+    "CLERK_SECRET_KEY",
+    "CLERK_WEBHOOK_SECRET",
+    "RESEND_API_KEY",
+    "SKIP_ENV_VALIDATION"
+  ],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": [
+        "MONGODB_URI",
+        "CLERK_SECRET_KEY",
+        "RESEND_API_KEY",
+        "SKIP_ENV_VALIDATION"
+      ]
     },
     "dev": {
       "cache": false,

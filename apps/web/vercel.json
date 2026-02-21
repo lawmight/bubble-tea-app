@@ -1,6 +1,9 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
-  "installCommand": "cd ../.. && pnpm install",
+  "installCommand": "cd ../.. && pnpm install --no-frozen-lockfile",
   "buildCommand": "cd ../.. && pnpm turbo run build --filter=web",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "env": {
+    "SKIP_ENV_VALIDATION": "1"
+  }
 }

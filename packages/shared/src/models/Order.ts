@@ -17,7 +17,7 @@ const orderItemSchema = new Schema(
 const orderSchema = new Schema(
   {
     orderNumber: { type: String, required: true, unique: true, trim: true },
-    idempotencyKey: { type: String, required: true, unique: true, index: true },
+    idempotencyKey: { type: String, required: true, unique: true },
     userId: { type: String, required: true, index: true },
     items: { type: [orderItemSchema], required: true },
     subtotalInCents: { type: Number, min: 0, required: true },
@@ -38,9 +38,7 @@ const orderSchema = new Schema(
 );
 
 orderSchema.index({ userId: 1, createdAt: -1 });
-orderSchema.index({ status: 1 });
 orderSchema.index({ createdAt: -1 });
-orderSchema.index({ orderNumber: 1 }, { unique: true });
 
 export type OrderDocument = InferSchemaType<typeof orderSchema> & {
   _id: Schema.Types.ObjectId;
