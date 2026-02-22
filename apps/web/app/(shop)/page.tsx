@@ -106,14 +106,22 @@ export default async function HomePage(): Promise<JSX.Element> {
   const products = await getProducts();
   const popular = products.slice(0, 4);
 
+  // Random hero: different product image on each request/refresh
+  const heroProduct =
+    products.length > 0
+      ? products[Math.floor(Math.random() * products.length)]
+      : null;
+  const heroImage = heroProduct?.image ?? HERO_IMAGE;
+  const heroAlt = heroProduct?.name ? `Featured: ${heroProduct.name}` : 'Handcrafted boba tea';
+
   return (
     <div className="space-y-10 pb-12">
       {/* ── 1. Greeting + Hero ── */}
       <section className="motion-safe:animate-fade-in-up">
         <div className="relative aspect-4/5 w-full overflow-hidden rounded-3xl">
           <Image
-            src={popular[0]?.image ?? HERO_IMAGE}
-            alt="Handcrafted boba tea"
+            src={heroImage}
+            alt={heroAlt}
             fill
             className="object-cover"
             sizes="(max-width: 640px) 100vw, 448px"

@@ -58,6 +58,7 @@ export function DrinkCustomizer({ product }: DrinkCustomizerProps): JSX.Element 
       image: product.image,
       quantity: 1,
       basePriceInCents: product.basePriceInCents,
+      unitPriceInCents: currentPrice,
       selection: {
         size,
         sugar,

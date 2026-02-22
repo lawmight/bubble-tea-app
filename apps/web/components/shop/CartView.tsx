@@ -32,7 +32,12 @@ export function CartView(): JSX.Element {
   }, [refreshAvailability]);
 
   const subtotalInCents = useMemo(
-    () => items.reduce((total, item) => total + item.basePriceInCents * item.quantity, 0),
+    () =>
+      items.reduce(
+        (total, item) =>
+          total + (item.unitPriceInCents ?? item.basePriceInCents) * item.quantity,
+        0,
+      ),
     [items],
   );
 

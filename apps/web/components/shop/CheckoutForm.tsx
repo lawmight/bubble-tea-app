@@ -24,7 +24,12 @@ export function CheckoutForm(): JSX.Element {
   const [pending, setPending] = useState(false);
 
   const subtotalInCents = useMemo(
-    () => items.reduce((total, item) => total + item.basePriceInCents * item.quantity, 0),
+    () =>
+      items.reduce(
+        (total, item) =>
+          total + (item.unitPriceInCents ?? item.basePriceInCents) * item.quantity,
+        0,
+      ),
     [items],
   );
   const taxInCents = calculateTax(subtotalInCents, TAX_RATE);
@@ -107,11 +112,18 @@ export function CheckoutForm(): JSX.Element {
                 <div className="min-w-0 flex-1">
                   <p className="truncate text-sm font-semibold text-[#6B5344]">{item.name}</p>
                   <p className="text-xs text-[#8C7B6B]">
-                    {formatMoney(toMoney(item.basePriceInCents))} &times; {item.quantity}
+                    {formatMoney(
+                      toMoney(item.unitPriceInCents ?? item.basePriceInCents),
+                    )}{' '}
+                    &times; {item.quantity}
                   </p>
                 </div>
                 <p className="shrink-0 text-sm font-bold text-[#6B5344]">
-                  {formatMoney(toMoney(item.basePriceInCents * item.quantity))}
+                  {formatMoney(
+                    toMoney(
+                      (item.unitPriceInCents ?? item.basePriceInCents) * item.quantity,
+                    ),
+                  )}
                 </p>
               </div>
             ))}

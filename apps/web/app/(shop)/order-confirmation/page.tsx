@@ -91,7 +91,8 @@ export default async function OrderConfirmationPage({
         </Link>
         <Link
           href="/menu"
-          className="flex h-12 w-full items-center justify-center rounded-full bg-[#6B5344] text-sm font-bold text-white transition-colors hover:bg-[#5A4538] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B5344]"
+          className="flex h-12 w-full items-center justify-center rounded-full bg-[#6B5344] text-sm font-bold transition-colors hover:bg-[#5A4538] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6B5344]"
+          style={{ color: '#FFFFFF' }}
         >
           Back to Menu
         </Link>

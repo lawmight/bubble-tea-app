@@ -1,6 +1,14 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 
 import { clampQuantity, type Cart, type CartItem } from '@vetea/shared/client';
 
@@ -17,11 +25,13 @@ function buildMergeKey(item: CartItem): string {
 }
 
 function persist(items: CartItem[]): void {
+  if (typeof window === 'undefined') return;
   const payload: Cart = { items };
   localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
 }
 
 function parseStorage(): CartItem[] {
+  if (typeof window === 'undefined') return [];
   try {
     const value = localStorage.getItem(STORAGE_KEY);
     if (!value) {
@@ -39,7 +49,7 @@ function parseStorage(): CartItem[] {
   }
 }
 
-export function useCart(): {
+export interface CartContextValue {
   items: CartItem[];
   count: number;
   announcement: string;
@@ -49,7 +59,11 @@ export function useCart(): {
   clearCart: () => void;
   mergeCartItems: (incoming: CartItem[]) => void;
   refreshAvailability: () => Promise<void>;
-} {
+}
+
+const CartContext = createContext<CartContextValue | null>(null);
+
+export function CartProvider({ children }: { children: ReactNode }): JSX.Element {
   const [items, setItems] = useState<CartItem[]>([]);
   const [announcement, setAnnouncement] = useState('');
 
@@ -65,40 +79,50 @@ export function useCart(): {
     setItems((current) => {
       const mergeKey = buildMergeKey(item);
       const existing = current.find((entry) => buildMergeKey(entry) === mergeKey);
+      let next: CartItem[];
       if (!existing) {
+        next = [...current, { ...item, quantity: clampQuantity(item.quantity) }];
         setAnnouncement(`${item.name} added to cart.`);
-        return [...current, { ...item, quantity: clampQuantity(item.quantity) }];
+      } else {
+        next = current.map((entry) =>
+          buildMergeKey(entry) === mergeKey
+            ? { ...entry, quantity: clampQuantity(entry.quantity + item.quantity) }
+            : entry,
+        );
+        setAnnouncement(`${item.name} quantity updated.`);
       }
-
-      const next = current.map((entry) =>
-        buildMergeKey(entry) === mergeKey
-          ? { ...entry, quantity: clampQuantity(entry.quantity + item.quantity) }
-          : entry,
-      );
-
-      setAnnouncement(`${item.name} quantity updated.`);
+      persist(next);
       return next;
     });
   }, []);
 
   const removeItem = useCallback((mergeKey: string) => {
-    setItems((current) => current.filter((entry) => buildMergeKey(entry) !== mergeKey));
-    setAnnouncement('Item removed from cart.');
+    setItems((current) => {
+      const next = current.filter((entry) => buildMergeKey(entry) !== mergeKey);
+      persist(next);
+      setAnnouncement('Item removed from cart.');
+      return next;
+    });
   }, []);
 
   const updateQuantity = useCallback((mergeKey: string, quantity: number) => {
-    setItems((current) =>
-      current.map((entry) =>
+    setItems((current) => {
+      const next = current.map((entry) =>
         buildMergeKey(entry) === mergeKey
           ? { ...entry, quantity: clampQuantity(quantity) }
           : entry,
-      ),
-    );
+      );
+      persist(next);
+      return next;
+    });
   }, []);
 
   const clearCart = useCallback(() => {
-    setItems([]);
-    setAnnouncement('Cart cleared.');
+    setItems(() => {
+      persist([]);
+      setAnnouncement('Cart cleared.');
+      return [];
+    });
   }, []);
 
   const mergeCartItems = useCallback((incoming: CartItem[]) => {
@@ -113,9 +137,11 @@ export function useCart(): {
         }
         existing.quantity = clampQuantity(existing.quantity + item.quantity);
       }
-      return Array.from(merged.values());
+      const next = Array.from(merged.values());
+      persist(next);
+      setAnnouncement('Cart merged.');
+      return next;
     });
-    setAnnouncement('Cart merged.');
   }, []);
 
   const refreshAvailability = useCallback(async () => {
@@ -149,6 +175,7 @@ export function useCart(): {
         setAnnouncement(`Removed unavailable items: ${Array.from(new Set(removed)).join(', ')}`);
       }
 
+      persist(filtered);
       return filtered;
     });
   }, []);
@@ -158,15 +185,38 @@ export function useCart(): {
     [items],
   );
 
-  return {
-    items,
-    count,
-    announcement,
-    addItem,
-    removeItem,
-    updateQuantity,
-    clearCart,
-    mergeCartItems,
-    refreshAvailability,
-  };
+  const value = useMemo<CartContextValue>(
+    () => ({
+      items,
+      count,
+      announcement,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+      mergeCartItems,
+      refreshAvailability,
+    }),
+    [
+      items,
+      count,
+      announcement,
+      addItem,
+      removeItem,
+      updateQuantity,
+      clearCart,
+      mergeCartItems,
+      refreshAvailability,
+    ],
+  );
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
+}
+
+export function useCart(): CartContextValue {
+  const ctx = useContext(CartContext);
+  if (ctx == null) {
+    throw new Error('useCart must be used within a CartProvider');
+  }
+  return ctx;
 }

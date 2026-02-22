@@ -16,7 +16,7 @@ export function CartItem({
   onIncrease,
   onRemove,
 }: CartItemProps): JSX.Element {
-  const unitPrice = item.basePriceInCents;
+  const unitPrice = item.unitPriceInCents ?? item.basePriceInCents;
   const isLastItem = item.quantity <= 1;
 
   function handleDecrease() {

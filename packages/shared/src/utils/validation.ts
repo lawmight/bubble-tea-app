@@ -40,6 +40,7 @@ export const cartItemSchema = z.object({
   image: z.string().min(1),
   quantity: z.number().int().min(1).max(10),
   basePriceInCents: z.number().int().min(0),
+  unitPriceInCents: z.number().int().min(0).optional(),
   selection: cartItemSelectionSchema,
   addedAt: z.string().datetime(),
 });

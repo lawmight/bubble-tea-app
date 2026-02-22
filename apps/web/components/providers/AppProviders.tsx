@@ -4,6 +4,8 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useState, type ReactNode } from 'react';
 
+import { CartProvider } from '@/hooks/use-cart';
+
 interface AppProvidersProps {
   children: ReactNode;
 }
@@ -13,7 +15,9 @@ export function AppProviders({ children }: AppProvidersProps): JSX.Element {
 
   return (
     <ClerkProvider>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      <QueryClientProvider client={queryClient}>
+        <CartProvider>{children}</CartProvider>
+      </QueryClientProvider>
     </ClerkProvider>
   );
 }

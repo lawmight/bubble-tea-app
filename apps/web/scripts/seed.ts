@@ -27,7 +27,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 550,
     category: 'milk-tea',
     image:
-      'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1747016804753-866c3ed6b3b7?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Okinawa Milk Tea',
@@ -36,7 +36,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 575,
     category: 'milk-tea',
     image:
-      'https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1751199956820-ecb919004024?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Thai Milk Tea',
@@ -45,7 +45,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 550,
     category: 'milk-tea',
     image:
-      'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1627781245399-a1fe415c0046?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Hokkaido Milk Tea',
@@ -54,7 +54,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 575,
     category: 'milk-tea',
     image:
-      'https://images.unsplash.com/photo-1571934811356-5cc061b6821f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1613018274405-f625e8643383?auto=format&fit=crop&w=800&q=80',
   },
   // Fruit Tea (3 products)
   {
@@ -64,7 +64,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 520,
     category: 'fruit-tea',
     image:
-      'https://images.unsplash.com/photo-1561047029-3000c68339ca?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1501199532894-9449c0a85a77?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Peach Oolong',
@@ -73,7 +73,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 550,
     category: 'fruit-tea',
     image:
-      'https://images.unsplash.com/photo-1544145945-f90425340c7e?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1676693420436-7fa448f054eb?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Mango Green Tea',
@@ -82,7 +82,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 550,
     category: 'fruit-tea',
     image:
-      'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1764403714198-f10e8e4039d0?auto=format&fit=crop&w=800&q=80',
   },
   // Special (3 products)
   {
@@ -92,7 +92,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 650,
     category: 'special',
     image:
-      'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1741244133076-afcdda4befae?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Matcha Latte',
@@ -101,7 +101,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 650,
     category: 'special',
     image:
-      'https://images.unsplash.com/photo-1515823064-d6e0c04616a7?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1749280447307-31a68eb38673?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Ube Latte',
@@ -110,7 +110,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 675,
     category: 'special',
     image:
-      'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1607547023948-57254fde4f0b?auto=format&fit=crop&w=800&q=80',
   },
   // Classic (2 products)
   {
@@ -120,7 +120,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 540,
     category: 'classic',
     image:
-      'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1575080424619-0f203e09e6ec?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Hong Kong Milk Tea',
@@ -129,7 +129,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 500,
     category: 'classic',
     image:
-      'https://images.unsplash.com/photo-1558857563-b371033873b8?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1600340432752-a407bab94cc3?auto=format&fit=crop&w=800&q=80',
   },
 ];
 

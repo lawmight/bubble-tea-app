@@ -12,6 +12,7 @@ export interface CartItem {
   image: string;
   quantity: number;
   basePriceInCents: number;
+  unitPriceInCents?: number;
   selection: CartItemSelection;
   addedAt: string;
 }
