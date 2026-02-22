@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
@@ -7,6 +6,7 @@ import { formatMoney, toMoney } from '@vetea/shared';
 
 import { DrinkCustomizerDynamic } from '@/components/shop/DrinkCustomizerDynamic';
 import { ProductCard } from '@/components/shop/ProductCard';
+import { ProductImage } from '@/components/shop/ProductImage';
 import { getProductBySlug, getProducts } from '@/lib/queries/products';
 
 /** Dynamic so build does not require MongoDB (avoids auth failure on Vercel build). */
@@ -78,7 +78,7 @@ export default async function ProductDetailPage({
 
       <div className="-mx-4 -mt-6">
         <div className="relative aspect-square bg-[#f8f4ed]">
-          <Image
+          <ProductImage
             src={product.image}
             alt={`${product.name} product photo`}
             fill

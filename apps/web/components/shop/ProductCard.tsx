@@ -1,6 +1,7 @@
 import { formatMoney, toMoney, type Product } from '@vetea/shared/client';
-import Image from 'next/image';
 import Link from 'next/link';
+
+import { ProductImage } from '@/components/shop/ProductImage';
 
 interface ProductCardProps {
   product: Product;
@@ -17,7 +18,7 @@ export function ProductCard({ product, priority = false, index = 0 }: ProductCar
     >
       <div className="overflow-hidden rounded-2xl border border-[#D4C5B2] bg-white transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md">
         <div className="shimmer relative aspect-square overflow-hidden">
-          <Image
+          <ProductImage
             src={product.image}
             alt={`${product.name} bubble tea`}
             fill

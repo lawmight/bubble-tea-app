@@ -92,7 +92,7 @@ const BASE_PRODUCTS: SeedProduct[] = [
     basePriceInCents: 650,
     category: 'special',
     image:
-      'https://images.unsplash.com/photo-1594489428504-5c0f0f63316f?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1581006852262-e4307cf6283a?auto=format&fit=crop&w=800&q=80',
   },
   {
     name: 'Matcha Latte',

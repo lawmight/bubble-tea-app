@@ -40,8 +40,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   );
 }
 
-const SUGAR_OPTIONS = ['0%', '25%', '50%', '75%', '100%'];
-const ICE_OPTIONS = ['No Ice', 'Less Ice', 'Normal Ice', 'Extra Ice'];
+import { PreferencesSegment } from './PreferencesSegment';
 
 export default async function SettingsPage(): Promise<JSX.Element> {
   const { userId, redirectToSignIn } = await auth();
@@ -130,58 +129,7 @@ export default async function SettingsPage(): Promise<JSX.Element> {
       </div>
 
       {/* Preferences Section */}
-      <div className="space-y-3">
-        <SectionHeading>Preferences</SectionHeading>
-        <div className="overflow-hidden rounded-2xl border border-[#E8DDD0] bg-white">
-          <div className="px-5 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-[#6B5344]">Default sugar level</p>
-                <p className="text-xs text-[#B5A898]">Applied to new orders</p>
-              </div>
-              <div className="flex gap-1">
-                {SUGAR_OPTIONS.map((level) => (
-                  <span
-                    key={level}
-                    className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                      level === '50%'
-                        ? 'bg-[#8B9F82] text-white'
-                        : 'bg-[#F5F0E8] text-[#8C7B6B]'
-                    }`}
-                  >
-                    {level}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          <div className="mx-5 border-t border-[#E8DDD0]" />
-
-          <div className="px-5 py-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-[#6B5344]">Default ice level</p>
-                <p className="text-xs text-[#B5A898]">Applied to new orders</p>
-              </div>
-              <div className="flex gap-1">
-                {ICE_OPTIONS.map((level) => (
-                  <span
-                    key={level}
-                    className={`rounded-full px-2.5 py-1 text-[11px] font-medium transition-colors ${
-                      level === 'Normal Ice'
-                        ? 'bg-[#8B9F82] text-white'
-                        : 'bg-[#F5F0E8] text-[#8C7B6B]'
-                    }`}
-                  >
-                    {level}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <PreferencesSegment />
 
       {/* About Section */}
       <div className="space-y-3">
