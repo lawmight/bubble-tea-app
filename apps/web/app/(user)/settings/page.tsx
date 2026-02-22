@@ -129,7 +129,10 @@ export default async function SettingsPage(): Promise<JSX.Element> {
       </div>
 
       {/* Preferences Section */}
-      <PreferencesSegment />
+      <PreferencesSegment
+        initialSugarLevel={user?.defaultSugarLevel ?? '50%'}
+        initialIceLevel={user?.defaultIceLevel ?? 'Normal Ice'}
+      />
 
       {/* About Section */}
       <div className="space-y-3">

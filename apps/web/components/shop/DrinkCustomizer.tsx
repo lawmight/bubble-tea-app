@@ -9,6 +9,8 @@ import { useCart } from '@/hooks/use-cart';
 
 interface DrinkCustomizerProps {
   product: Product;
+  defaultSugar?: string;
+  defaultIce?: string;
 }
 
 function getDefaultOption(
@@ -19,13 +21,30 @@ function getDefaultOption(
   return options.find((option) => option.available)?.name ?? '';
 }
 
-export function DrinkCustomizer({ product }: DrinkCustomizerProps): JSX.Element {
+function resolveInitial(
+  product: Product,
+  type: 'sugar' | 'ice',
+  preferred?: string,
+): string {
+  const options = product.customizations.find((entry) => entry.type === type)?.options ?? [];
+  const availableNames = options.filter((o) => o.available).map((o) => o.name);
+  if (preferred && availableNames.includes(preferred)) return preferred;
+  return availableNames[0] ?? '';
+}
+
+export function DrinkCustomizer({
+  product,
+  defaultSugar,
+  defaultIce,
+}: DrinkCustomizerProps): JSX.Element {
   const router = useRouter();
   const { addItem } = useCart();
 
   const [size, setSize] = useState(() => getDefaultOption(product, 'size'));
-  const [sugar, setSugar] = useState(() => getDefaultOption(product, 'sugar'));
-  const [ice, setIce] = useState(() => getDefaultOption(product, 'ice'));
+  const [sugar, setSugar] = useState(() =>
+    resolveInitial(product, 'sugar', defaultSugar),
+  );
+  const [ice, setIce] = useState(() => resolveInitial(product, 'ice', defaultIce));
   const [toppings, setToppings] = useState<string[]>([]);
 
   const sizeOptions = useMemo(

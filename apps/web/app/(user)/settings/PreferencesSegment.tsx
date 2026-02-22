@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 
+import { updateUserPreferences } from '@/app/actions/user';
+
 const SUGAR_OPTIONS = ['0%', '25%', '50%', '75%', '100%'];
 const ICE_OPTIONS = ['No Ice', 'Less Ice', 'Normal Ice', 'Extra Ice'];
 
@@ -25,9 +27,31 @@ function OptionButton({ label, isSelected, onClick }: OptionButtonProps) {
   );
 }
 
-export function PreferencesSegment() {
-  const [sugarLevel, setSugarLevel] = useState('50%');
-  const [iceLevel, setIceLevel] = useState('Normal Ice');
+interface PreferencesSegmentProps {
+  initialSugarLevel: string;
+  initialIceLevel: string;
+}
+
+export function PreferencesSegment({
+  initialSugarLevel,
+  initialIceLevel,
+}: PreferencesSegmentProps) {
+  const [sugarLevel, setSugarLevel] = useState(
+    SUGAR_OPTIONS.includes(initialSugarLevel) ? initialSugarLevel : '50%',
+  );
+  const [iceLevel, setIceLevel] = useState(
+    ICE_OPTIONS.includes(initialIceLevel) ? initialIceLevel : 'Normal Ice',
+  );
+
+  const handleSugarChange = (level: string) => {
+    setSugarLevel(level);
+    void updateUserPreferences(level, iceLevel);
+  };
+
+  const handleIceChange = (level: string) => {
+    setIceLevel(level);
+    void updateUserPreferences(sugarLevel, level);
+  };
 
   return (
     <div className="space-y-3">
@@ -47,7 +71,7 @@ export function PreferencesSegment() {
                   key={level}
                   label={level}
                   isSelected={sugarLevel === level}
-                  onClick={() => setSugarLevel(level)}
+                  onClick={() => handleSugarChange(level)}
                 />
               ))}
             </div>
@@ -68,7 +92,7 @@ export function PreferencesSegment() {
                   key={level}
                   label={level}
                   isSelected={iceLevel === level}
-                  onClick={() => setIceLevel(level)}
+                  onClick={() => handleIceChange(level)}
                 />
               ))}
             </div>

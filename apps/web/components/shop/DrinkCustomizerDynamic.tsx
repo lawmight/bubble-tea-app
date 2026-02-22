@@ -58,8 +58,20 @@ const DrinkCustomizer = dynamic(
 
 interface DrinkCustomizerDynamicProps {
   product: Product;
+  defaultSugar?: string;
+  defaultIce?: string;
 }
 
-export function DrinkCustomizerDynamic({ product }: DrinkCustomizerDynamicProps): JSX.Element {
-  return <DrinkCustomizer product={product} />;
+export function DrinkCustomizerDynamic({
+  product,
+  defaultSugar,
+  defaultIce,
+}: DrinkCustomizerDynamicProps): JSX.Element {
+  return (
+    <DrinkCustomizer
+      product={product}
+      defaultSugar={defaultSugar}
+      defaultIce={defaultIce}
+    />
+  );
 }

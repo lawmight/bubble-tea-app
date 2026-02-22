@@ -4,6 +4,8 @@ export interface User {
   email: string;
   name: string;
   phone?: string;
+  defaultSugarLevel?: string;
+  defaultIceLevel?: string;
   createdAt: Date;
   updatedAt: Date;
 }

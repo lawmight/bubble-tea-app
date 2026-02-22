@@ -6,6 +6,8 @@ const userSchema = new Schema(
     email: { type: String, required: true, trim: true },
     name: { type: String, required: true, trim: true },
     phone: { type: String, required: false, trim: true },
+    defaultSugarLevel: { type: String, required: false, trim: true },
+    defaultIceLevel: { type: String, required: false, trim: true },
     deletedAt: { type: Date, required: false },
   },
   { timestamps: true },

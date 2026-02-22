@@ -10,6 +10,8 @@ function normalizeUser(raw: Record<string, unknown>): User {
     email: String(raw.email),
     name: String(raw.name),
     phone: raw.phone ? String(raw.phone) : undefined,
+    defaultSugarLevel: raw.defaultSugarLevel ? String(raw.defaultSugarLevel) : undefined,
+    defaultIceLevel: raw.defaultIceLevel ? String(raw.defaultIceLevel) : undefined,
     createdAt: new Date(String(raw.createdAt)),
     updatedAt: new Date(String(raw.updatedAt)),
   };

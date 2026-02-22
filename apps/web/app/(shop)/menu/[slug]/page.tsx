@@ -2,12 +2,15 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
+import { auth } from '@clerk/nextjs/server';
 import { formatMoney, toMoney } from '@vetea/shared';
 
 import { DrinkCustomizerDynamic } from '@/components/shop/DrinkCustomizerDynamic';
 import { ProductCard } from '@/components/shop/ProductCard';
 import { ProductImage } from '@/components/shop/ProductImage';
 import { getProductBySlug, getProducts } from '@/lib/queries/products';
+import { getUserByClerkId } from '@/lib/queries/users';
+import { resolveDefaultIce, resolveDefaultSugar } from '@/lib/utils/preferences';
 
 /** Dynamic so build does not require MongoDB (avoids auth failure on Vercel build). */
 export const dynamic = 'force-dynamic';
@@ -47,6 +50,11 @@ export default async function ProductDetailPage({
   if (!product) {
     notFound();
   }
+
+  const { userId } = await auth();
+  const user = userId ? await getUserByClerkId(userId) : null;
+  const defaultSugar = resolveDefaultSugar(product, user?.defaultSugarLevel);
+  const defaultIce = resolveDefaultIce(product, user?.defaultIceLevel);
 
   const allInCategory = await getProducts(product.category);
   const relatedProducts = allInCategory
@@ -111,7 +119,11 @@ export default async function ProductDetailPage({
         </p>
       </div>
 
-      <DrinkCustomizerDynamic product={product} />
+      <DrinkCustomizerDynamic
+        product={product}
+        defaultSugar={defaultSugar}
+        defaultIce={defaultIce}
+      />
 
       {relatedProducts.length > 0 && (
         <div className="mt-10 border-t border-[#E8DDD0] pt-8 pb-4">
