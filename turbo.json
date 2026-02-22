@@ -5,7 +5,13 @@
     "CLERK_SECRET_KEY",
     "CLERK_WEBHOOK_SECRET",
     "RESEND_API_KEY",
-    "SKIP_ENV_VALIDATION"
+    "SKIP_ENV_VALIDATION",
+    "NEXT_PUBLIC_APP_URL",
+    "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+    "NEXT_PUBLIC_CLERK_SIGN_IN_URL",
+    "NEXT_PUBLIC_CLERK_SIGN_UP_URL",
+    "STAFF_EMAIL",
+    "REVALIDATE_SECRET"
   ],
   "tasks": {
     "build": {
@@ -14,28 +20,21 @@
       "env": [
         "MONGODB_URI",
         "CLERK_SECRET_KEY",
+        "CLERK_WEBHOOK_SECRET",
         "RESEND_API_KEY",
-        "SKIP_ENV_VALIDATION"
+        "SKIP_ENV_VALIDATION",
+        "NEXT_PUBLIC_APP_URL",
+        "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY",
+        "NEXT_PUBLIC_CLERK_SIGN_IN_URL",
+        "NEXT_PUBLIC_CLERK_SIGN_UP_URL",
+        "STAFF_EMAIL",
+        "REVALIDATE_SECRET"
       ]
     },
-    "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "dev:turbo": {
-      "cache": false,
-      "persistent": true
-    },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
-    "test": {
-      "dependsOn": ["^build"],
-      "outputs": ["coverage/**"]
-    },
-    "typecheck": {
-      "dependsOn": ["^typecheck"],
-      "outputs": []
-    }
+    "dev": { "cache": false, "persistent": true },
+    "dev:turbo": { "cache": false, "persistent": true },
+    "lint": { "dependsOn": ["^lint"] },
+    "test": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },
+    "typecheck": { "dependsOn": ["^typecheck"], "outputs": [] }
   }
 }
