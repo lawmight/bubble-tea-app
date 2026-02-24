@@ -24,7 +24,10 @@ export const metadata: Metadata = {
     type: 'website',
   },
   manifest: '/manifest.webmanifest',
-  icons: { icon: '/logo.svg' },
+  icons: [
+    { rel: 'icon', url: '/icon.svg', type: 'image/svg+xml', sizes: 'any' },
+    { rel: 'icon', url: '/logo.svg', type: 'image/svg+xml', sizes: 'any' },
+  ],
 };
 
 const localBusinessJsonLd = {
