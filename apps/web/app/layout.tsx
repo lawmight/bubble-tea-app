@@ -8,20 +8,23 @@ import { AppProviders } from '@/components/providers/AppProviders';
 
 import './globals.css';
 
+const appUrl =
+  process.env.NEXT_PUBLIC_APP_URL?.trim() || 'https://vtbbt.vercel.app';
+
 export const metadata: Metadata = {
   title: {
     default: 'VETEA Bubble Tea',
     template: '%s | VETEA Bubble Tea',
   },
   description: 'Order handcrafted bubble tea with fast pickup.',
-  metadataBase: new URL('http://localhost:3000'),
+  metadataBase: new URL(appUrl),
   openGraph: {
     title: 'VETEA Bubble Tea',
     description: 'Order handcrafted bubble tea with fast pickup.',
     type: 'website',
   },
   manifest: '/manifest.webmanifest',
-  icons: { icon: '/logo.ico' },
+  icons: { icon: '/logo.svg' },
 };
 
 const localBusinessJsonLd = {

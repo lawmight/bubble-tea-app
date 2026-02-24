@@ -20,6 +20,8 @@ export const env = createEnv({
     CLERK_SECRET_KEY: z.string().min(1),
     CLERK_WEBHOOK_SECRET: z.string().min(1),
     RESEND_API_KEY: z.string().min(1, 'Resend API key required for emails').optional(),
+    /** Optional. Defaults to VETEA <onboarding@resend.dev> for testing; set e.g. orders@yourdomain.com when domain is verified in Resend. */
+    EMAIL_FROM: z.string().min(1).optional(),
     STAFF_EMAIL: z.string().email().optional(),
     /** Optional. When set, GET /api/revalidate?secret=...&tag=products is allowed for on-demand cache revalidation (e.g. after seeding). */
     REVALIDATE_SECRET: z.string().min(1).optional(),
@@ -37,6 +39,7 @@ export const env = createEnv({
     CLERK_SECRET_KEY: process.env.CLERK_SECRET_KEY,
     CLERK_WEBHOOK_SECRET: process.env.CLERK_WEBHOOK_SECRET,
     RESEND_API_KEY: process.env.RESEND_API_KEY,
+    EMAIL_FROM: process.env.EMAIL_FROM,
     STAFF_EMAIL: process.env.STAFF_EMAIL,
     REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
     NEXT_PUBLIC_APP_URL: getAppUrl(),

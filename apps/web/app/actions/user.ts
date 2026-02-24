@@ -1,6 +1,7 @@
 'use server';
 
-import { auth } from '@clerk/nextjs/server';
+import { revalidatePath } from 'next/cache';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { UserModel } from '@vetea/shared/models/User';
 
 import { connectDB } from '@/lib/db';
@@ -29,16 +30,46 @@ export async function updateUserPreferences(
   try {
     await connectDB();
 
-    const result = await UserModel.findOneAndUpdate(
+    let result = await UserModel.findOneAndUpdate(
       { clerkId: userId },
       { $set: { defaultSugarLevel, defaultIceLevel } },
       { new: true },
     ).exec();
 
     if (!result) {
+      const clerkUser = await currentUser();
+      if (!clerkUser) {
+        return { success: false, message: 'User not found. Please try again after signing in.' };
+      }
+      const email = clerkUser.emailAddresses[0]?.emailAddress ?? '';
+      const name =
+        [clerkUser.firstName, clerkUser.lastName].filter(Boolean).join(' ').trim() ||
+        email ||
+        'Customer';
+      const phone = clerkUser.phoneNumbers[0]?.phoneNumber ?? undefined;
+
+      result = await UserModel.findOneAndUpdate(
+        { clerkId: userId },
+        {
+          $set: {
+            clerkId: userId,
+            email,
+            name,
+            phone,
+            defaultSugarLevel,
+            defaultIceLevel,
+            deletedAt: undefined,
+          },
+        },
+        { upsert: true, new: true },
+      ).exec();
+    }
+
+    if (!result) {
       return { success: false, message: 'User not found. Please try again after signing in.' };
     }
 
+    revalidatePath('/settings');
     return { success: true, message: 'Preferences saved.' };
   } catch (err) {
     console.error('updateUserPreferences error:', err);

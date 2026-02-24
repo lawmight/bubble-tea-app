@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 import { updateUserPreferences } from '@/app/actions/user';
 
@@ -36,21 +37,29 @@ export function PreferencesSegment({
   initialSugarLevel,
   initialIceLevel,
 }: PreferencesSegmentProps) {
+  const router = useRouter();
   const [sugarLevel, setSugarLevel] = useState(
     SUGAR_OPTIONS.includes(initialSugarLevel) ? initialSugarLevel : '50%',
   );
   const [iceLevel, setIceLevel] = useState(
     ICE_OPTIONS.includes(initialIceLevel) ? initialIceLevel : 'Normal Ice',
   );
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleSugarChange = (level: string) => {
+  const handleSugarChange = async (level: string) => {
     setSugarLevel(level);
-    void updateUserPreferences(level, iceLevel);
+    setErrorMessage(null);
+    const result = await updateUserPreferences(level, iceLevel);
+    if (!result.success) setErrorMessage(result.message);
+    else router.refresh();
   };
 
-  const handleIceChange = (level: string) => {
+  const handleIceChange = async (level: string) => {
     setIceLevel(level);
-    void updateUserPreferences(sugarLevel, level);
+    setErrorMessage(null);
+    const result = await updateUserPreferences(sugarLevel, level);
+    if (!result.success) setErrorMessage(result.message);
+    else router.refresh();
   };
 
   return (
@@ -58,6 +67,11 @@ export function PreferencesSegment({
       <h2 className="text-xs font-semibold uppercase tracking-wider text-[#B5A898]">
         Preferences
       </h2>
+      {errorMessage && (
+        <p className="text-sm text-red-600" role="alert">
+          {errorMessage}
+        </p>
+      )}
       <div className="overflow-hidden rounded-2xl border border-[#E8DDD0] bg-white">
         <div className="px-5 py-4">
           <div className="flex items-center justify-between">
