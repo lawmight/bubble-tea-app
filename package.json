@@ -18,5 +18,13 @@
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@clerk/shared",
+      "esbuild",
+      "sharp",
+      "unrs-resolver"
+    ]
   }
 }

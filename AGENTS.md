@@ -23,3 +23,13 @@
 - Testing: Vitest + React Testing Library planned; Playwright optional for E2E.
 - **VETEA mockup images**: Use the canonical mold only. Rule `.cursor/rules/vetea-mockup-generation.mdc` applies when generating mockups under `docs/assets/`. Always use `docs/assets/vetea-mockup-mold.json` (base prompt) and `docs/assets/preview/vetea-mockup-mold-reference.png` (reference image); vary only the page-specific content.
 - No additional tool rules found (.cursor rules, CLAUDE.md, Windsurf, Cline, Goose, Copilot instructions).
+
+## Cursor Cloud specific instructions
+
+- **MongoDB**: A local MongoDB 8.0 instance is required. Install with the official apt repo for Ubuntu 24.04 (Noble), then start with `sudo mongod --fork --logpath /var/log/mongod.log --dbpath /data/db`. The app connects via `MONGODB_URI` in `.env.local`.
+- **Environment variables**: Create `apps/web/.env.local` with `MONGODB_URI`, `CLERK_SECRET_KEY`, `CLERK_WEBHOOK_SECRET`, `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`, `NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in`, `NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up`, `NEXT_PUBLIC_APP_URL=http://localhost:3000`. The Clerk and MongoDB secrets should be provided via Cursor Secrets.
+- **Build scripts**: The root `package.json` includes `pnpm.onlyBuiltDependencies` to allow build scripts for `@clerk/shared`, `esbuild`, `sharp`, and `unrs-resolver` without interactive approval.
+- **Dev server IPv6**: The Next.js dev server binds to IPv6 (`:::3000`). Use `http://[::1]:3000` for curl; browsers resolve `localhost` correctly.
+- **Shared package**: `@vetea/shared` must be built (`pnpm --filter @vetea/shared build`) before the web app compiles. Turborepo task dependencies handle this automatically via `pnpm dev` or `pnpm build`.
+- **Seeding**: Run `pnpm --filter web seed` to populate MongoDB with 12 sample drinks (requires `.env` and `.env.local` in `apps/web`).
+- **Common commands**: See the top-level section above for `pnpm install`, `pnpm dev`, `pnpm lint`, `pnpm test`.
