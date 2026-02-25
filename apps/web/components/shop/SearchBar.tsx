@@ -59,7 +59,7 @@ export function SearchBar(): JSX.Element {
         type="search"
         value={value}
         onChange={handleChange}
-        placeholder="Search drinks\u2026"
+        placeholder="Search drinks…"
         aria-label="Search drinks"
         className="w-full rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] py-2.5 pl-10 pr-9 text-sm text-[var(--color-text)] placeholder-[var(--color-text-secondary)] transition-colors focus:border-[var(--color-primary)] focus:outline-none"
       />
