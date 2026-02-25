@@ -36,3 +36,5 @@
 - **Dev server startup**: Use `pnpm --filter web dev` (not bare `next dev`) since `next` isn't on `PATH` outside pnpm. Allow ~15s for initial compilation before curling routes.
 - **SKIP_ENV_VALIDATION**: Set `SKIP_ENV_VALIDATION=1` in `apps/web/.env` (or export it) when running `pnpm lint`, `pnpm typecheck`, or `pnpm build` without fully configured Clerk/MongoDB secrets. The `@t3-oss/env-nextjs` validation in `lib/env.ts` will otherwise fail at import time.
 - **Common commands**: See the top-level section above for `pnpm install`, `pnpm dev`, `pnpm lint`, `pnpm test`.
+- **public/ directory**: The root `.gitignore` ignores `public` (Gatsby default). Files in `apps/web/public/` must be added with `git add -f`. The service worker at `apps/web/public/sw.js` is already force-tracked.
+- **PWA service worker**: The SW at `public/sw.js` registers only in production or when `NEXT_PUBLIC_ENABLE_SW=1` is set. The `ServiceWorkerRegistration` component in the root layout handles registration and shows an update toast via sonner.
