@@ -34,4 +34,5 @@
 - **Seeding**: Run `pnpm --filter web seed` to populate MongoDB with 12 sample drinks (requires `.env` and `.env.local` in `apps/web`). If `apps/web/.env` doesn't exist, create an empty one: `touch apps/web/.env`.
 - **Next.js cache**: If you see stale chunk errors (e.g. `Cannot find module '/vendor-chunks/...'`) after dependency changes, delete `apps/web/.next` and restart the dev server.
 - **Dev server startup**: Use `pnpm --filter web dev` (not bare `next dev`) since `next` isn't on `PATH` outside pnpm. Allow ~15s for initial compilation before curling routes.
+- **SKIP_ENV_VALIDATION**: Set `SKIP_ENV_VALIDATION=1` in `apps/web/.env` (or export it) when running `pnpm lint`, `pnpm typecheck`, or `pnpm build` without fully configured Clerk/MongoDB secrets. The `@t3-oss/env-nextjs` validation in `lib/env.ts` will otherwise fail at import time.
 - **Common commands**: See the top-level section above for `pnpm install`, `pnpm dev`, `pnpm lint`, `pnpm test`.
