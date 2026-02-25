@@ -6,8 +6,8 @@ import { auth } from '@clerk/nextjs/server';
 import { formatMoney, toMoney } from '@vetea/shared';
 
 import { DrinkCustomizerDynamic } from '@/components/shop/DrinkCustomizerDynamic';
+import { ImageCarousel } from '@/components/shop/ImageCarousel';
 import { ProductCard } from '@/components/shop/ProductCard';
-import { ProductImage } from '@/components/shop/ProductImage';
 import { getProductBySlug, getProducts } from '@/lib/queries/products';
 import { getUserByClerkId } from '@/lib/queries/users';
 import { resolveDefaultIce, resolveDefaultSugar } from '@/lib/utils/preferences';
@@ -39,6 +39,18 @@ export async function generateMetadata({
       images: [{ url: product.image }],
     },
   };
+}
+
+function buildCarouselImages(
+  baseUrl: string,
+  name: string,
+): { src: string; alt: string }[] {
+  const separator = baseUrl.includes('?') ? '&' : '?';
+  return [
+    { src: baseUrl, alt: `${name} – photo 1` },
+    { src: `${baseUrl}${separator}crop=top&w=800`, alt: `${name} – photo 2` },
+    { src: `${baseUrl}${separator}crop=bottom&w=800`, alt: `${name} – photo 3` },
+  ];
 }
 
 export default async function ProductDetailPage({
@@ -85,15 +97,11 @@ export default async function ProductDetailPage({
       />
 
       <div className="-mx-4 -mt-6">
-        <div className="relative aspect-square bg-[#f8f4ed]">
-          <ProductImage
-            src={product.image}
-            alt={`${product.name} product photo`}
-            fill
-            className="object-cover"
+        <div className="relative bg-[#f8f4ed]">
+          <ImageCarousel
+            images={buildCarouselImages(product.image, product.name)}
             sizes="(max-width: 768px) 100vw, 50vw"
             priority
-            fetchPriority="high"
           />
           <Link
             href="/menu"
