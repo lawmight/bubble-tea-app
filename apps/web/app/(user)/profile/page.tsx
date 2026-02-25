@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { SignOutButton } from '@clerk/nextjs';
 import { auth, currentUser } from '@clerk/nextjs/server';
 
+import { FavoritesList } from '@/components/shop/FavoritesList';
 import { getUserByClerkId } from '@/lib/queries/users';
 
 export const metadata: Metadata = {
@@ -29,21 +30,6 @@ function ChevronRight() {
       strokeLinejoin="round"
     >
       <path d="m9 18 6-6-6-6" />
-    </svg>
-  );
-}
-
-function HeartIcon() {
-  return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      stroke="none"
-      aria-hidden="true"
-    >
-      <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
     </svg>
   );
 }
@@ -87,35 +73,12 @@ export default async function ProfilePage(): Promise<JSX.Element> {
         </div>
       </div>
 
-      {/* Favorites / Quick Reorder */}
+      {/* Favorites */}
       <div className="space-y-3">
         <h2 className="text-xs font-semibold uppercase tracking-wider text-[#B5A898]">
           Your Favorites
         </h2>
-        <div className="space-y-2">
-          {[
-            { name: 'Taro Milk Tea', detail: 'Large · 50% sugar · Less ice' },
-            { name: 'Brown Sugar Boba', detail: 'Regular · 75% sugar · Normal ice' },
-            { name: 'Matcha Latte', detail: 'Large · 25% sugar · No ice' },
-          ].map((fav) => (
-            <Link
-              key={fav.name}
-              href="/menu"
-              className="group flex items-center gap-3 rounded-xl border border-[#E8DDD0] bg-white px-4 py-3 transition-all duration-200 hover:border-[#8B9F82]/30 hover:shadow-sm"
-            >
-              <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#8B9F82]/10 text-[#8B9F82]">
-                <HeartIcon />
-              </span>
-              <div className="min-w-0 flex-1">
-                <p className="text-sm font-medium text-[#6B5344]">{fav.name}</p>
-                <p className="truncate text-xs text-[#B5A898]">{fav.detail}</p>
-              </div>
-              <span className="rounded-full bg-[#8B9F82]/10 px-2.5 py-1 text-[10px] font-semibold text-[#8B9F82] opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                Reorder
-              </span>
-            </Link>
-          ))}
-        </div>
+        <FavoritesList />
       </div>
 
       {/* Navigation */}

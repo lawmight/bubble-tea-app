@@ -5,6 +5,8 @@ import { auth } from '@clerk/nextjs/server';
 import { formatMoney, STORE_TIMEZONE, toMoney } from '@vetea/shared';
 
 import { CancelOrderButton } from '@/components/shop/CancelOrderButton';
+import { OrdersLiveList } from '@/components/shop/OrdersLiveList';
+import { ReorderButton } from '@/components/shop/ReorderButton';
 import { getUserOrders } from '@/lib/queries/orders';
 
 export const metadata: Metadata = {
@@ -216,54 +218,18 @@ function OrderCard({ order }: { order: Parameters<typeof OrdersContent>[0]['orde
         ) : (
           <div />
         )}
-        <Link
-          href="/menu"
-          className="inline-flex items-center gap-1.5 rounded-full bg-[#F5F0E8] px-3 py-1.5 text-xs font-medium text-[#6B5344] transition-colors hover:bg-[#E8DDD0]"
-        >
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <path d="M17 1l4 4-4 4" />
-            <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-            <path d="M7 23l-4-4 4-4" />
-            <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-          </svg>
-          Reorder
-        </Link>
+        <ReorderButton items={order.items} />
       </div>
     </li>
   );
 }
 
 function OrdersContent({ orders }: { orders: Awaited<ReturnType<typeof getUserOrders>> }) {
-  const activeOrders = orders.filter((o) => ACTIVE_STATUSES.has(o.status));
   const pastOrders = orders.filter((o) => !ACTIVE_STATUSES.has(o.status));
 
   return (
     <div className="space-y-6">
-      {activeOrders.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="inline-block h-2 w-2 animate-pulse rounded-full bg-[#8B9F82]" />
-            <h2 className="text-xs font-semibold uppercase tracking-wider text-[#8B9F82]">
-              Active Orders
-            </h2>
-          </div>
-          <ul className="space-y-3">
-            {activeOrders.map((order) => (
-              <OrderCard key={order.id} order={order} />
-            ))}
-          </ul>
-        </div>
-      )}
+      <OrdersLiveList initialOrders={orders} />
 
       {pastOrders.length > 0 && (
         <div className="space-y-3">
