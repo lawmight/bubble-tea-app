@@ -30,6 +30,32 @@
   --font-body: 'DM Sans', system-ui, sans-serif;
 }
 
+.dark {
+  color-scheme: dark;
+
+  --color-bg: #1C1714;
+  --color-bg-card: #2A2320;
+  --color-bg-input: #332B26;
+  --color-bg-muted: #3A312B;
+
+  --color-primary: #A3B89A;
+  --color-primary-hover: #B5CAAC;
+  --color-primary-muted: #A3B89ACC;
+
+  --color-accent: #E0D0C0;
+  --color-accent-hover: #F0E4D8;
+
+  --color-text: #E0D0C0;
+  --color-text-secondary: #B5A898;
+  --color-text-inverse: #1C1714;
+
+  --color-border: #4A3F38;
+  --color-border-card: #3A312B;
+
+  --color-danger: #D4706D;
+  --color-danger-hover: #E08885;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -59,7 +85,7 @@ a {
 
 ::selection {
   background-color: #8B9F8233;
-  color: #6B5344;
+  color: var(--color-text);
 }
 
 :focus-visible {
@@ -96,7 +122,7 @@ a {
 }
 
 .shimmer {
-  background: linear-gradient(90deg, #FAF7F2 25%, #EDE5D8 50%, #FAF7F2 75%);
+  background: linear-gradient(90deg, var(--color-bg-input) 25%, var(--color-bg-muted) 50%, var(--color-bg-input) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.5s ease-in-out infinite;
 }

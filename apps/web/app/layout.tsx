@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 import { Analytics } from '@vercel/analytics/next';
+import { Toaster } from 'sonner';
 
 import { MobileShell } from '@/components/layout/MobileShell';
 import { SkipNav } from '@/components/layout/SkipNav';
@@ -50,7 +51,7 @@ export default function RootLayout({
 }>): JSX.Element {
   return (
     <html lang="en">
-        <body className="bg-[#F5F0E8] text-[#6B5344] antialiased">
+        <body className="bg-[var(--color-bg)] text-[var(--color-text)] antialiased transition-colors duration-200">
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessJsonLd) }}
@@ -59,6 +60,18 @@ export default function RootLayout({
           <SkipNav />
           <MobileShell>{children}</MobileShell>
         </AppProviders>
+        <Toaster
+          position="top-center"
+          toastOptions={{
+            style: {
+              background: 'var(--color-bg-card)',
+              border: '1px solid var(--color-border-card)',
+              color: 'var(--color-text)',
+              fontSize: '14px',
+            },
+          }}
+          offset={16}
+        />
         <Analytics />
       </body>
     </html>

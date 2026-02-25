@@ -22,16 +22,22 @@ function normalizeProduct(raw: Record<string, unknown>): Product {
 }
 
 /**
- * Cached per category so each filter has its own cache entry.
- * Key includes category so revalidateTag('products') invalidates all category slices.
+ * Cached per category+query so each filter combination has its own cache entry.
+ * Key includes category and query so revalidateTag('products') invalidates all slices.
  */
-function getProductsCached(category?: string): Promise<Product[]> {
+function getProductsCached(category?: string, query?: string): Promise<Product[]> {
   return unstable_cache(
     async () => {
       await connectDB();
-      const filter = category
-        ? { available: true, category }
-        : { available: true };
+      const filter: Record<string, unknown> = { available: true };
+      if (category) filter.category = category;
+      if (query) {
+        const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        filter.$or = [
+          { name: { $regex: escaped, $options: 'i' } },
+          { description: { $regex: escaped, $options: 'i' } },
+        ];
+      }
 
       const products = await ProductModel.find(filter)
         .select(
@@ -42,7 +48,7 @@ function getProductsCached(category?: string): Promise<Product[]> {
 
       return products.map((product) => normalizeProduct(product as Record<string, unknown>));
     },
-    ['products-list', category ?? 'all'],
+    ['products-list', category ?? 'all', query ?? ''],
     { revalidate: 3600, tags: ['products'] },
   )();
 }
@@ -62,8 +68,8 @@ const getProductBySlugCached = unstable_cache(
   { revalidate: 3600, tags: ['products'] },
 );
 
-export async function getProducts(category?: string): Promise<Product[]> {
-  return getProductsCached(category);
+export async function getProducts(category?: string, query?: string): Promise<Product[]> {
+  return getProductsCached(category, query);
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
