@@ -72,8 +72,10 @@ export function DrinkCustomizer({
 
   const [isAdding, setIsAdding] = useState(false);
 
+  const productUnavailable = !product.available;
+
   const handleAddToCart = () => {
-    if (isAdding) return;
+    if (isAdding || productUnavailable) return;
     setIsAdding(true);
 
     addItem({
@@ -240,14 +242,18 @@ export function DrinkCustomizer({
         <button
           type="button"
           onClick={handleAddToCart}
-          disabled={isAdding}
+          disabled={isAdding || productUnavailable}
           className={`w-full rounded-t-2xl py-4 text-center text-base font-semibold text-white shadow-[0_-8px_24px_rgba(0,0,0,0.12)] transition-all duration-300 ${
-            isAdding
-              ? 'bg-green-600'
-              : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-hover)]'
+            productUnavailable
+              ? 'cursor-not-allowed bg-[#8C7B6B] opacity-60'
+              : isAdding
+                ? 'bg-green-600'
+                : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-hover)]'
           }`}
         >
-          {isAdding ? (
+          {productUnavailable ? (
+            'Sold Out'
+          ) : isAdding ? (
             <span className="inline-flex items-center gap-2">
               <svg className="animate-scale-in" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                 <path d="M4 10l4 4L16 6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />

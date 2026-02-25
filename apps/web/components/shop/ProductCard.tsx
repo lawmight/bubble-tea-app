@@ -1,6 +1,7 @@
 import { formatMoney, toMoney, type Product } from '@vetea/shared/client';
 import Link from 'next/link';
 
+import { FavoriteButton } from '@/components/shop/FavoriteButton';
 import { ProductImage } from '@/components/shop/ProductImage';
 
 interface ProductCardProps {
@@ -10,6 +11,8 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, priority = false, index = 0 }: ProductCardProps): JSX.Element {
+  const soldOut = !product.available;
+
   return (
     <Link
       href={`/menu/${product.slug}`}
@@ -18,18 +21,31 @@ export function ProductCard({ product, priority = false, index = 0 }: ProductCar
     >
       <div className="overflow-hidden rounded-2xl border border-[#D4C5B2] bg-white transition-all duration-200 group-hover:-translate-y-0.5 group-hover:shadow-md">
         <div className="shimmer relative aspect-square overflow-hidden">
+          <FavoriteButton
+            product={{
+              productId: product.id,
+              productSlug: product.slug,
+              name: product.name,
+              image: product.image,
+            }}
+          />
           <ProductImage
             src={product.image}
             alt={`${product.name} bubble tea`}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className={`object-cover transition-transform duration-300 group-hover:scale-105 ${soldOut ? 'opacity-50 grayscale' : ''}`}
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             priority={priority}
             fetchPriority={priority ? 'high' : 'auto'}
           />
+          {soldOut && (
+            <span className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#6B5344]/85 px-3.5 py-1.5 text-xs font-bold uppercase tracking-wider text-white shadow-sm">
+              Sold Out
+            </span>
+          )}
         </div>
         <div className="px-3 py-3 text-center">
-          <h3 className="text-sm font-semibold text-[#6B5344]">{product.name}</h3>
+          <h3 className={`text-sm font-semibold ${soldOut ? 'text-[#8C7B6B]' : 'text-[#6B5344]'}`}>{product.name}</h3>
           <p className="mt-1 text-sm font-medium text-[#8B9F82]">
             <span className="text-xs font-normal text-[#8C7B6B]">From </span>
             {formatMoney(toMoney(product.basePriceInCents))}
