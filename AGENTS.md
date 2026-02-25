@@ -31,5 +31,7 @@
 - **Build scripts**: The root `package.json` includes `pnpm.onlyBuiltDependencies` to allow build scripts for `@clerk/shared`, `esbuild`, `sharp`, and `unrs-resolver` without interactive approval.
 - **Dev server IPv6**: The Next.js dev server binds to IPv6 (`:::3000`). Use `http://[::1]:3000` for curl; browsers resolve `localhost` correctly.
 - **Shared package**: `@vetea/shared` must be built (`pnpm --filter @vetea/shared build`) before the web app compiles. Turborepo task dependencies handle this automatically via `pnpm dev` or `pnpm build`.
-- **Seeding**: Run `pnpm --filter web seed` to populate MongoDB with 12 sample drinks (requires `.env` and `.env.local` in `apps/web`).
+- **Seeding**: Run `pnpm --filter web seed` to populate MongoDB with 12 sample drinks (requires `.env` and `.env.local` in `apps/web`). If `apps/web/.env` doesn't exist, create an empty one: `touch apps/web/.env`.
+- **Next.js cache**: If you see stale chunk errors (e.g. `Cannot find module '/vendor-chunks/...'`) after dependency changes, delete `apps/web/.next` and restart the dev server.
+- **Dev server startup**: Use `pnpm --filter web dev` (not bare `next dev`) since `next` isn't on `PATH` outside pnpm. Allow ~15s for initial compilation before curling routes.
 - **Common commands**: See the top-level section above for `pnpm install`, `pnpm dev`, `pnpm lint`, `pnpm test`.
