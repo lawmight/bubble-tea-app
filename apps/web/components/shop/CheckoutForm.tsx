@@ -1,10 +1,17 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-import { calculateTax, calculateTotal, formatMoney, toMoney } from '@vetea/shared/client';
+import {
+  calculateTax,
+  calculateTotal,
+  formatMoney,
+  isStoreOpen,
+  STORE_TIMEZONE,
+  toMoney,
+} from '@vetea/shared/client';
 
 import { placeOrder } from '@/app/actions/order';
 import { OrderSummary } from '@/components/shop/OrderSummary';
@@ -12,6 +19,68 @@ import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/use-cart';
 
 const TAX_RATE = 0.08;
+const ORDER_COOLDOWN_MS = 30_000;
+const SESSION_KEY_LAST_ORDER = 'vetea_last_order_ts';
+
+const PROMO_CODES: Record<string, number> = {
+  WELCOME10: 0.1,
+};
+
+function useStoreOpenCheck(): boolean {
+  const [open, setOpen] = useState(() => {
+    const now = new Date(
+      new Date().toLocaleString('en-US', { timeZone: STORE_TIMEZONE }),
+    );
+    return isStoreOpen(now);
+  });
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = new Date(
+        new Date().toLocaleString('en-US', { timeZone: STORE_TIMEZONE }),
+      );
+      setOpen(isStoreOpen(now));
+    }, 60_000);
+    return () => clearInterval(interval);
+  }, []);
+
+  return open;
+}
+
+function useOrderCooldown(): {
+  cooldownRemaining: number;
+  startCooldown: () => void;
+} {
+  const [cooldownRemaining, setCooldownRemaining] = useState(() => {
+    if (typeof window === 'undefined') return 0;
+    const stored = sessionStorage.getItem(SESSION_KEY_LAST_ORDER);
+    if (!stored) return 0;
+    const elapsed = Date.now() - Number(stored);
+    return elapsed < ORDER_COOLDOWN_MS ? ORDER_COOLDOWN_MS - elapsed : 0;
+  });
+
+  useEffect(() => {
+    if (cooldownRemaining <= 0) return;
+    const timer = setInterval(() => {
+      const stored = sessionStorage.getItem(SESSION_KEY_LAST_ORDER);
+      if (!stored) {
+        setCooldownRemaining(0);
+        return;
+      }
+      const elapsed = Date.now() - Number(stored);
+      const remaining = ORDER_COOLDOWN_MS - elapsed;
+      setCooldownRemaining(remaining > 0 ? remaining : 0);
+    }, 1_000);
+    return () => clearInterval(timer);
+  }, [cooldownRemaining]);
+
+  const startCooldown = useCallback(() => {
+    sessionStorage.setItem(SESSION_KEY_LAST_ORDER, String(Date.now()));
+    setCooldownRemaining(ORDER_COOLDOWN_MS);
+  }, []);
+
+  return { cooldownRemaining, startCooldown };
+}
 
 export function CheckoutForm(): JSX.Element {
   const router = useRouter();
@@ -23,6 +92,16 @@ export function CheckoutForm(): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const [pending, setPending] = useState(false);
 
+  const [promoInput, setPromoInput] = useState('');
+  const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
+  const [promoError, setPromoError] = useState('');
+
+  const storeIsOpen = useStoreOpenCheck();
+  const isClosed = !storeIsOpen;
+
+  const { cooldownRemaining, startCooldown } = useOrderCooldown();
+  const cooldownSeconds = Math.ceil(cooldownRemaining / 1_000);
+
   const subtotalInCents = useMemo(
     () =>
       items.reduce(
@@ -32,9 +111,28 @@ export function CheckoutForm(): JSX.Element {
       ),
     [items],
   );
-  const taxInCents = calculateTax(subtotalInCents, TAX_RATE);
-  const totalInCents = calculateTotal(subtotalInCents, taxInCents, tipInCents, 0);
-  const isClosed = false;
+
+  const discountRate = appliedPromo ? (PROMO_CODES[appliedPromo] ?? 0) : 0;
+  const discountInCents = Math.round(subtotalInCents * discountRate);
+  const discountedSubtotal = subtotalInCents - discountInCents;
+
+  const taxInCents = calculateTax(discountedSubtotal, TAX_RATE);
+  const totalInCents = calculateTotal(discountedSubtotal, taxInCents, tipInCents, 0);
+
+  function applyPromo(): void {
+    setPromoError('');
+    const code = promoInput.trim().toUpperCase();
+    if (!code) {
+      setPromoError('Please enter a promo code.');
+      return;
+    }
+    if (!PROMO_CODES[code]) {
+      setPromoError('Invalid promo code.');
+      return;
+    }
+    setAppliedPromo(code);
+    setPromoInput('');
+  }
 
   async function submitOrder(): Promise<void> {
     setErrorMessage('');
@@ -47,6 +145,11 @@ export function CheckoutForm(): JSX.Element {
 
     if (items.length === 0) {
       setErrorMessage('Your cart is empty.');
+      return;
+    }
+
+    if (cooldownRemaining > 0) {
+      setErrorMessage(`Please wait ${cooldownSeconds}s before placing another order.`);
       return;
     }
 
@@ -66,6 +169,7 @@ export function CheckoutForm(): JSX.Element {
         return;
       }
 
+      startCooldown();
       clearCart();
       setStatusMessage(`Order ${result.data?.orderNumber ?? ''} placed successfully.`);
       router.push(
@@ -157,11 +261,59 @@ export function CheckoutForm(): JSX.Element {
         </div>
       </fieldset>
 
+      {/* Promo code */}
+      <div className="space-y-2 rounded-2xl border border-[#E8DDD0] bg-white p-4">
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-[#8C7B6B]">
+          Promo Code
+        </h2>
+        {appliedPromo ? (
+          <div className="flex items-center justify-between">
+            <span className="text-sm font-medium text-[#8B9F82]">
+              {appliedPromo} applied
+            </span>
+            <button
+              type="button"
+              onClick={() => setAppliedPromo(null)}
+              className="text-xs font-medium text-[#8C7B6B] underline hover:text-[#6B5344]"
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Input
+              placeholder="Enter code"
+              value={promoInput}
+              onChange={(e) => setPromoInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  applyPromo();
+                }
+              }}
+              className="flex-1"
+            />
+            <button
+              type="button"
+              onClick={applyPromo}
+              className="shrink-0 rounded-full border border-[#D4C5B2] px-4 py-1.5 text-sm font-medium text-[#6B5344] transition-colors hover:border-[#8B9F82] hover:text-[#8B9F82]"
+            >
+              Apply
+            </button>
+          </div>
+        )}
+        {promoError && (
+          <p className="text-xs text-[#8f3331]">{promoError}</p>
+        )}
+      </div>
+
       {/* Price breakdown */}
       <OrderSummary
         subtotalInCents={subtotalInCents}
         taxInCents={taxInCents}
         tipInCents={tipInCents}
+        discountInCents={discountInCents}
+        promoCode={appliedPromo ?? undefined}
         totalInCents={totalInCents}
       />
 
@@ -233,7 +385,7 @@ export function CheckoutForm(): JSX.Element {
       {/* Place Order CTA */}
       <button
         type="button"
-        disabled={pending || isClosed}
+        disabled={pending || isClosed || cooldownRemaining > 0}
         onClick={() => void submitOrder()}
         className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#8B9F82] text-sm font-bold text-white transition-colors hover:bg-[#7A8E72] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8B9F82] disabled:cursor-not-allowed disabled:opacity-50"
       >
@@ -241,7 +393,11 @@ export function CheckoutForm(): JSX.Element {
           <rect x="3" y="11" width="18" height="11" rx="2" stroke="currentColor" strokeWidth="2" />
           <path d="M7 11V7a5 5 0 0110 0v4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
         </svg>
-        {pending ? 'Placing order...' : `Place Order (${formatMoney(toMoney(totalInCents))})`}
+        {pending
+          ? 'Placing order...'
+          : cooldownRemaining > 0
+            ? `Wait ${cooldownSeconds}s...`
+            : `Place Order (${formatMoney(toMoney(totalInCents))})`}
       </button>
     </section>
   );

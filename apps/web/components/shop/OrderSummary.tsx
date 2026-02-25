@@ -5,6 +5,8 @@ interface OrderSummaryProps {
   taxInCents: number;
   tipInCents?: number;
   serviceFeeInCents?: number;
+  discountInCents?: number;
+  promoCode?: string;
   totalInCents: number;
 }
 
@@ -13,6 +15,8 @@ export function OrderSummary({
   taxInCents,
   tipInCents = 0,
   serviceFeeInCents = 0,
+  discountInCents = 0,
+  promoCode,
   totalInCents,
 }: OrderSummaryProps): JSX.Element {
   return (
@@ -23,6 +27,16 @@ export function OrderSummary({
           <dt className="text-[#8C7B6B]">Subtotal</dt>
           <dd className="text-[#6B5344]">{formatMoney(toMoney(subtotalInCents))}</dd>
         </div>
+        {discountInCents > 0 ? (
+          <div className="flex items-center justify-between">
+            <dt className="text-[#8B9F82]">
+              Discount{promoCode ? ` (${promoCode})` : ''}
+            </dt>
+            <dd className="text-[#8B9F82]">
+              &minus;{formatMoney(toMoney(discountInCents))}
+            </dd>
+          </div>
+        ) : null}
         <div className="flex items-center justify-between">
           <dt className="text-[#8C7B6B]">Tax</dt>
           <dd className="text-[#6B5344]">{formatMoney(toMoney(taxInCents))}</dd>
