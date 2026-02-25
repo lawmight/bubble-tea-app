@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 import { calculateItemUnitPrice, formatMoney, toMoney, type Product } from '@vetea/shared/client';
 
@@ -69,7 +70,12 @@ export function DrinkCustomizer({
     [product.basePriceInCents, size, sizeOptions, toppingOptions, toppings],
   );
 
+  const [isAdding, setIsAdding] = useState(false);
+
   const handleAddToCart = () => {
+    if (isAdding) return;
+    setIsAdding(true);
+
     addItem({
       productId: product.id,
       productSlug: product.slug,
@@ -86,7 +92,12 @@ export function DrinkCustomizer({
       },
       addedAt: new Date().toISOString(),
     });
-    router.push('/cart');
+
+    toast.success('Added to cart', { description: product.name });
+
+    setTimeout(() => {
+      router.push('/cart');
+    }, 600);
   };
 
   return (
@@ -229,9 +240,23 @@ export function DrinkCustomizer({
         <button
           type="button"
           onClick={handleAddToCart}
-          className="w-full rounded-t-2xl bg-[var(--color-primary)] py-4 text-center text-base font-semibold text-white shadow-[0_-8px_24px_rgba(0,0,0,0.12)] transition-colors hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-hover)]"
+          disabled={isAdding}
+          className={`w-full rounded-t-2xl py-4 text-center text-base font-semibold text-white shadow-[0_-8px_24px_rgba(0,0,0,0.12)] transition-all duration-300 ${
+            isAdding
+              ? 'bg-green-600'
+              : 'bg-[var(--color-primary)] hover:bg-[var(--color-primary-hover)] active:bg-[var(--color-primary-hover)]'
+          }`}
         >
-          Add to Cart &mdash; 1&times; {formatMoney(toMoney(currentPrice))}
+          {isAdding ? (
+            <span className="inline-flex items-center gap-2">
+              <svg className="animate-scale-in" width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                <path d="M4 10l4 4L16 6" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Added!
+            </span>
+          ) : (
+            <>Add to Cart &mdash; 1&times; {formatMoney(toMoney(currentPrice))}</>
+          )}
         </button>
       </div>
     </>

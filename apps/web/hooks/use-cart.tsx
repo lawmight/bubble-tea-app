@@ -9,6 +9,7 @@ import {
   useState,
   type ReactNode,
 } from 'react';
+import { toast } from 'sonner';
 
 import { clampQuantity, type Cart, type CartItem } from '@vetea/shared/client';
 
@@ -101,6 +102,7 @@ export function CartProvider({ children }: { children: ReactNode }): JSX.Element
       const next = current.filter((entry) => buildMergeKey(entry) !== mergeKey);
       persist(next);
       setAnnouncement('Item removed from cart.');
+      toast('Item removed');
       return next;
     });
   }, []);
@@ -121,11 +123,13 @@ export function CartProvider({ children }: { children: ReactNode }): JSX.Element
     setItems(() => {
       persist([]);
       setAnnouncement('Cart cleared.');
+      toast('Cart cleared');
       return [];
     });
   }, []);
 
   const mergeCartItems = useCallback((incoming: CartItem[]) => {
+    const toastId = toast.loading('Syncing cart...');
     setItems((current) => {
       const merged = new Map<string, CartItem>();
       for (const item of [...current, ...incoming]) {
@@ -140,6 +144,7 @@ export function CartProvider({ children }: { children: ReactNode }): JSX.Element
       const next = Array.from(merged.values());
       persist(next);
       setAnnouncement('Cart merged.');
+      toast.success('Cart synced', { id: toastId });
       return next;
     });
   }, []);
