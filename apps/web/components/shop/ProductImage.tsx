@@ -11,6 +11,14 @@ interface ProductImageProps {
   sizes?: string;
   priority?: boolean;
   fetchPriority?: 'high' | 'low' | 'auto';
+  themeColor?: string;
+}
+
+const FALLBACK_THEME_COLOR = '#d4c5b2';
+
+function makeBlurDataUrl(color: string): string {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1" height="1"><rect width="1" height="1" fill="${color}"/></svg>`;
+  return `data:image/svg+xml;base64,${typeof window !== 'undefined' ? window.btoa(svg) : Buffer.from(svg).toString('base64')}`;
 }
 
 export function ProductImage({
@@ -21,8 +29,10 @@ export function ProductImage({
   sizes,
   priority,
   fetchPriority,
+  themeColor,
 }: ProductImageProps): JSX.Element {
   const [error, setError] = useState(false);
+  const [loaded, setLoaded] = useState(false);
 
   if (error) {
     return (
@@ -50,15 +60,31 @@ export function ProductImage({
   }
 
   return (
-    <Image
-      src={src}
-      alt={alt}
-      fill={fill}
-      className={className}
-      sizes={sizes}
-      priority={priority}
-      fetchPriority={fetchPriority}
-      onError={() => setError(true)}
-    />
+    <>
+      {!loaded && (
+        <div
+          className={`${fill ? 'absolute inset-0' : ''} animate-pulse`}
+          style={{
+            backgroundColor: themeColor ?? FALLBACK_THEME_COLOR,
+            filter: 'blur(20px)',
+            opacity: 0.6,
+          }}
+          aria-hidden
+        />
+      )}
+      <Image
+        src={src}
+        alt={alt}
+        fill={fill}
+        className={`${className} transition-opacity duration-300 ${loaded ? 'opacity-100' : 'opacity-0'}`}
+        sizes={sizes}
+        priority={priority}
+        fetchPriority={fetchPriority}
+        placeholder="blur"
+        blurDataURL={makeBlurDataUrl(themeColor ?? FALLBACK_THEME_COLOR)}
+        onLoad={() => setLoaded(true)}
+        onError={() => setError(true)}
+      />
+    </>
   );
 }
