@@ -41,6 +41,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
 }
 
 import { PreferencesSegment } from './PreferencesSegment';
+import { AppearanceSegment } from './AppearanceSegment';
 
 export default async function SettingsPage(): Promise<JSX.Element> {
   const { userId, redirectToSignIn } = await auth();
@@ -133,6 +134,9 @@ export default async function SettingsPage(): Promise<JSX.Element> {
         initialSugarLevel={user?.defaultSugarLevel ?? '50%'}
         initialIceLevel={user?.defaultIceLevel ?? 'Normal Ice'}
       />
+
+      {/* Appearance Section */}
+      <AppearanceSegment />
 
       {/* About Section */}
       <div className="space-y-3">

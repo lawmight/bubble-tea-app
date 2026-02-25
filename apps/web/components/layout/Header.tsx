@@ -1,12 +1,14 @@
 import { auth } from '@clerk/nextjs/server';
 import Link from 'next/link';
 
+import { ThemeToggle } from '@/components/ui/ThemeToggle';
+
 export async function Header(): Promise<JSX.Element> {
   await auth();
 
   return (
-    <header className="sticky top-0 z-30 bg-[#F5F0E8]/95 backdrop-blur-md">
-      <div className="mx-auto grid w-full max-w-3xl grid-cols-[2.5rem_1fr_2.5rem] items-center px-4 py-3">
+    <header className="sticky top-0 z-30 bg-[#F5F0E8]/95 backdrop-blur-md dark:bg-[var(--color-bg)]/95">
+      <div className="mx-auto grid w-full max-w-3xl grid-cols-[2.5rem_1fr_auto] items-center px-4 py-3">
         <div aria-hidden="true" />
 
         <Link
@@ -37,16 +39,17 @@ export async function Header(): Promise<JSX.Element> {
               strokeLinecap="round"
             />
           </svg>
-          <span className="text-xl tracking-wide text-[#6B5344] font-display">
+          <span className="text-xl tracking-wide text-[#6B5344] font-display dark:text-[var(--color-text)]">
             VETEA
           </span>
         </Link>
 
-        <div className="flex items-center justify-end">
+        <div className="flex items-center justify-end gap-1">
+          <ThemeToggle size="sm" />
           <Link
             href="/menu"
             aria-label="Search menu"
-            className="flex h-9 w-9 items-center justify-center rounded-full text-[#6B5344] transition-colors hover:bg-[#E8DDD0]"
+            className="flex h-9 w-9 items-center justify-center rounded-full text-[#6B5344] transition-colors hover:bg-[#E8DDD0] dark:text-[var(--color-text)] dark:hover:bg-[var(--color-bg-muted)]"
           >
             <svg
               width="20"
