@@ -4,6 +4,10 @@ import { formatMoney, toMoney } from '@vetea/shared';
 import { getEmailFrom, getResend } from '@/lib/notifications/email';
 import { env } from '@/lib/env';
 import { log } from '@/lib/logger';
+import {
+  newOrderNotificationHtml,
+  orderConfirmationHtml,
+} from '@/lib/notifications/templates';
 
 function formatOrderItems(order: Order): string {
   return order.items
@@ -14,6 +18,10 @@ function formatOrderItems(order: Order): string {
     .join('\n');
 }
 
+function plainTextSummary(order: Order): string {
+  return `Order: ${order.orderNumber}\n\n${formatOrderItems(order)}\n\nTotal: ${formatMoney(toMoney(order.totalPriceInCents))}`;
+}
+
 export async function notifyCustomer(order: Order, toEmail: string): Promise<void> {
   try {
     const resend = getResend();
@@ -22,7 +30,8 @@ export async function notifyCustomer(order: Order, toEmail: string): Promise<voi
         from: getEmailFrom(),
         to: [toEmail],
         subject: `Order confirmed ${order.orderNumber}`,
-        text: `Thanks for your order!\n\nOrder: ${order.orderNumber}\n\n${formatOrderItems(order)}\n\nTotal: ${formatMoney(toMoney(order.totalPriceInCents))}`,
+        html: orderConfirmationHtml(order),
+        text: `Thanks for your order!\n\n${plainTextSummary(order)}`,
       },
       { idempotencyKey: `order-confirmation/${order.idempotencyKey}` },
     );
@@ -46,7 +55,8 @@ export async function notifyStaff(order: Order): Promise<void> {
         from: getEmailFrom(),
         to: [env.STAFF_EMAIL],
         subject: `New order ${order.orderNumber}`,
-        text: `${order.orderNumber}\n\n${formatOrderItems(order)}\n\nTotal: ${formatMoney(toMoney(order.totalPriceInCents))}`,
+        html: newOrderNotificationHtml(order),
+        text: plainTextSummary(order),
       },
       { idempotencyKey: `staff-new-order/${order.idempotencyKey}` },
     );
