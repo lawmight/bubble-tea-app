@@ -4,6 +4,7 @@ import { Analytics } from '@vercel/analytics/next';
 import { Toaster } from 'sonner';
 
 import { MobileShell } from '@/components/layout/MobileShell';
+import { ServiceWorkerRegistration } from '@/components/layout/ServiceWorkerRegistration';
 import { SkipNav } from '@/components/layout/SkipNav';
 import { AppProviders } from '@/components/providers/AppProviders';
 
@@ -72,6 +73,7 @@ export default function RootLayout({
           }}
           offset={16}
         />
+        <ServiceWorkerRegistration />
         <Analytics />
       </body>
     </html>

@@ -1,3 +1,4 @@
-// Service worker scaffold file for Serwist integration.
-// Wire generated runtime handlers once production caching rules are finalized.
+// Service worker scaffold file — kept for future Serwist integration.
+// The active service worker lives at public/sw.js and is registered by
+// components/layout/ServiceWorkerRegistration.tsx.
 export {};
