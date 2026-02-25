@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import { formatMoney, toMoney, STORE_TIMEZONE } from '@vetea/shared';
+import { formatMoney, toMoney, STORE_TIMEZONE, ORDER_STATUSES } from '@vetea/shared';
 
 import { getAllOrders, getAllProducts } from '@/lib/queries/admin';
+import { DashboardCharts } from '@/components/admin/DashboardCharts';
 
 export const metadata: Metadata = {
   title: 'Admin Dashboard',
@@ -59,6 +60,33 @@ export default async function AdminDashboardPage() {
 
   const recentOrders = orders.slice(0, 8);
 
+  const ordersByStatus = ORDER_STATUSES.map((status) => ({
+    status,
+    count: orders.filter((o) => o.status === status).length,
+  }));
+
+  const now = new Date();
+  const revenueLast7Days = Array.from({ length: 7 }, (_, i) => {
+    const d = new Date(now);
+    d.setDate(d.getDate() - (6 - i));
+    const dayStart = new Date(d);
+    dayStart.setHours(0, 0, 0, 0);
+    const dayEnd = new Date(d);
+    dayEnd.setHours(23, 59, 59, 999);
+
+    const dayOrders = orders.filter((o) => {
+      if (o.status !== 'completed') return false;
+      const updated = new Date(o.updatedAt);
+      return updated >= dayStart && updated <= dayEnd;
+    });
+
+    return {
+      date: dayStart.toISOString().slice(0, 10),
+      label: new Intl.DateTimeFormat('en-US', { weekday: 'short' }).format(dayStart),
+      totalInCents: dayOrders.reduce((sum, o) => sum + o.totalPriceInCents, 0),
+    };
+  });
+
   return (
     <div className="space-y-8">
       <div>
@@ -98,6 +126,8 @@ export default async function AdminDashboardPage() {
           value={formatMoney(toMoney(revenueToday))}
         />
       </div>
+
+      <DashboardCharts ordersByStatus={ordersByStatus} revenueLast7Days={revenueLast7Days} />
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
