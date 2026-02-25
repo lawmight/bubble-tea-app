@@ -25,6 +25,8 @@ export const env = createEnv({
     STAFF_EMAIL: z.string().email().optional(),
     /** Optional. When set, GET /api/revalidate?secret=...&tag=products is allowed for on-demand cache revalidation (e.g. after seeding). */
     REVALIDATE_SECRET: z.string().min(1).optional(),
+    /** Optional Stripe secret key. When set, online payment via Stripe Checkout is enabled. */
+    STRIPE_SECRET_KEY: z.string().min(1).optional(),
   },
   client: {
     /** Required for auth/links; defaults to production URL so Vercel build succeeds before env is set. */
@@ -32,6 +34,8 @@ export const env = createEnv({
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: z.string().min(1),
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: z.string().min(1),
     NEXT_PUBLIC_CLERK_SIGN_UP_URL: z.string().min(1),
+    /** Optional Stripe publishable key. Exposed to the client for Stripe.js. */
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: z.string().min(1).optional(),
   },
   skipValidation: !!process.env.SKIP_ENV_VALIDATION,
   runtimeEnv: {
@@ -42,10 +46,12 @@ export const env = createEnv({
     EMAIL_FROM: process.env.EMAIL_FROM,
     STAFF_EMAIL: process.env.STAFF_EMAIL,
     REVALIDATE_SECRET: process.env.REVALIDATE_SECRET,
+    STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY,
     NEXT_PUBLIC_APP_URL: getAppUrl(),
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY,
     NEXT_PUBLIC_CLERK_SIGN_IN_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_IN_URL,
     NEXT_PUBLIC_CLERK_SIGN_UP_URL: process.env.NEXT_PUBLIC_CLERK_SIGN_UP_URL,
+    NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY,
   },
   emptyStringAsUndefined: true,
 });

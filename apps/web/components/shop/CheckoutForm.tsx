@@ -18,6 +18,8 @@ import { OrderSummary } from '@/components/shop/OrderSummary';
 import { Input } from '@/components/ui/input';
 import { useCart } from '@/hooks/use-cart';
 
+type PaymentMethod = 'pickup' | 'online';
+
 const TAX_RATE = 0.08;
 const ORDER_COOLDOWN_MS = 30_000;
 const SESSION_KEY_LAST_ORDER = 'vetea_last_order_ts';
@@ -92,9 +94,13 @@ export function CheckoutForm(): JSX.Element {
   const [errorMessage, setErrorMessage] = useState('');
   const [pending, setPending] = useState(false);
 
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('pickup');
+
   const [promoInput, setPromoInput] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<string | null>(null);
   const [promoError, setPromoError] = useState('');
+
+  const stripeConfigured = !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
 
   const storeIsOpen = useStoreOpenCheck();
   const isClosed = !storeIsOpen;
@@ -307,6 +313,32 @@ export function CheckoutForm(): JSX.Element {
         )}
       </div>
 
+      {/* Payment method */}
+      <fieldset className="space-y-2 rounded-2xl border border-[#E8DDD0] bg-white p-4">
+        <legend className="text-sm font-medium text-[#6B5344]">Payment Method</legend>
+        <div className="flex flex-wrap gap-2">
+          {(['pickup', 'online'] as const).map((method) => (
+            <button
+              key={method}
+              type="button"
+              onClick={() => setPaymentMethod(method)}
+              className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
+                paymentMethod === method
+                  ? 'border-[#8B9F82] bg-[#8B9F82] text-white'
+                  : 'border-[#D4C5B2] text-[#6B5344] hover:border-[#8B9F82] hover:text-[#8B9F82]'
+              }`}
+            >
+              {method === 'pickup' ? 'Pay at Pickup' : 'Pay Online'}
+            </button>
+          ))}
+        </div>
+        {paymentMethod === 'online' && !stripeConfigured && (
+          <p className="text-xs text-[#8C7B6B]">
+            Online payment coming soon. Please select &ldquo;Pay at Pickup&rdquo; for now.
+          </p>
+        )}
+      </fieldset>
+
       {/* Price breakdown */}
       <OrderSummary
         subtotalInCents={subtotalInCents}
@@ -350,7 +382,11 @@ export function CheckoutForm(): JSX.Element {
             aria-describedby={errorMessage ? 'checkout-error' : undefined}
           />
         </div>
-        <p className="pt-1 text-xs text-[#8C7B6B]">Pay in person on pickup.</p>
+        <p className="pt-1 text-xs text-[#8C7B6B]">
+          {paymentMethod === 'online' && stripeConfigured
+            ? 'You will be redirected to complete payment.'
+            : 'Pay in person on pickup.'}
+        </p>
       </div>
 
       {/* Error / status messages */}
@@ -385,7 +421,7 @@ export function CheckoutForm(): JSX.Element {
       {/* Place Order CTA */}
       <button
         type="button"
-        disabled={pending || isClosed || cooldownRemaining > 0}
+        disabled={pending || isClosed || cooldownRemaining > 0 || (paymentMethod === 'online' && !stripeConfigured)}
         onClick={() => void submitOrder()}
         className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-[#8B9F82] text-sm font-bold text-white transition-colors hover:bg-[#7A8E72] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#8B9F82] disabled:cursor-not-allowed disabled:opacity-50"
       >
